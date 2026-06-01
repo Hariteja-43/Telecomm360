@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\UseCase - Telecomm360\\Telecomm360\\Telecomm360.csproj": {}
+    "C:\\Users\\2499005\\Downloads\\ramupdate\\ram\\Telecomm360\\Telecomm360.csproj": {}
   },
   "projects": {
-    "C:\\UseCase - Telecomm360\\Telecomm360\\Telecomm360.csproj": {
+    "C:\\Users\\2499005\\Downloads\\ramupdate\\ram\\Telecomm360\\Telecomm360.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\UseCase - Telecomm360\\Telecomm360\\Telecomm360.csproj",
+        "projectUniqueName": "C:\\Users\\2499005\\Downloads\\ramupdate\\ram\\Telecomm360\\Telecomm360.csproj",
         "projectName": "Telecomm360",
-        "projectPath": "C:\\UseCase - Telecomm360\\Telecomm360\\Telecomm360.csproj",
+        "projectPath": "C:\\Users\\2499005\\Downloads\\ramupdate\\ram\\Telecomm360\\Telecomm360.csproj",
         "packagesPath": "C:\\Users\\2499005\\.nuget\\packages\\",
-        "outputPath": "C:\\UseCase - Telecomm360\\Telecomm360\\obj\\",
+        "outputPath": "C:\\Users\\2499005\\Downloads\\ramupdate\\ram\\Telecomm360\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,7 +51,7 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[10.0.8, )"
             },
@@ -66,6 +66,10 @@
               "version": "[10.0.8, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[10.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[10.0.8, )"
             },

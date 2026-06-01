@@ -2,7 +2,6 @@
 bin/
 obj/
 out/
-
 ## Visual Studio files
 .vs/
 *.user
@@ -21,7 +20,7 @@ out/
 *.nupkg
 packages/
 !packages/build/
-
+ 
 ## .NET Core
 project.lock.json
 project.fragment.lock.json
@@ -55,7 +54,7 @@ coverage/
 *.mdf
 *.ldf
 *.db
-
+ 
 ## Temporary files
 *.tmp
 *.temp
