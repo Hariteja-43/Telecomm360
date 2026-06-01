@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Telecomm360")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+548d879210a1d46e06c13132f2968aaa31aaa4bd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d6e6eacb2492759ab41b91fd7ce4d6fb78e6f290")]
 [assembly: System.Reflection.AssemblyProductAttribute("Telecomm360")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Telecomm360")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
