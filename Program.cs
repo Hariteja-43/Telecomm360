@@ -1,18 +1,43 @@
+using Telecom360.Repository.Interface;
+using Telecom360.Repository.Implementation;
+using Telecom360.Services.Interface;
+using Telecom360.Services.Implementation;
+using Telecom360.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services to the container.
-
+// ✅ Add Controllers
 builder.Services.AddControllers();
+
+// ✅ Swagger Configuration
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+
+// ✅ Dependency Injection - Repositories
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IComplianceReportRepository, ComplianceReportRepository>();
+builder.Services.AddScoped<IRetentionPolicyRepository, RetentionPolicyRepository>();
+
+
+// ✅ Dependency Injection - Services
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IComplianceReportService, ComplianceReportService>();
+builder.Services.AddScoped<IRetentionPolicyService, RetentionPolicyService>();
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+// ✅ Middleware Pipeline
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
