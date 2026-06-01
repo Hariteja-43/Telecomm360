@@ -1,0 +1,6 @@
+@Telecomm360_HostAddress = http://localhost:5114
+
+GET {{Telecomm360_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
