@@ -10,3 +10,239 @@ info: Microsoft.Hosting.Lifetime[0]
       Hosting environment: Development
 info: Microsoft.Hosting.Lifetime[0]
       Content root path: c:\Users\2498956\Desktop\test\Telecomm360
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[10625]
+      The foreign key property 'Subscriber.CustomerId1' was created in shadow state because a conflicting property with the simple name 'CustomerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Amount' on entity type 'Invoice'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Amount' on entity type 'Payment'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (44ms) [Parameters=[@email='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[UserID], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Phone], [u].[ResetToken], [u].[RoleID]
+      FROM [Users] AS [u]
+      WHERE [u].[Email] = @email
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@roleName='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [r].[RoleID], [r].[Description], [r].[Name], [r].[Status]
+      FROM [Roles] AS [r]
+      WHERE [r].[Name] = @roleName
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [Users] ([Email], [Name], [PasswordHash], [Phone], [ResetToken], [RoleID])
+      OUTPUT INSERTED.[UserID]
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (DbType = DateTime2), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [AuditLogs] ([Action], [Resource], [Timestamp], [UserID])
+      OUTPUT INSERTED.[AuditLogID]
+      VALUES (@p0, @p1, @p2, @p3);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@email='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[UserID], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Phone], [u].[ResetToken], [u].[RoleID]
+      FROM [Users] AS [u]
+      WHERE [u].[Email] = @email
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (DbType = DateTime2), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [AuditLogs] ([Action], [Resource], [Timestamp], [UserID])
+      OUTPUT INSERTED.[AuditLogID]
+      VALUES (@p0, @p1, @p2, @p3);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@email='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[UserID], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Phone], [u].[ResetToken], [u].[RoleID]
+      FROM [Users] AS [u]
+      WHERE [u].[Email] = @email
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[@p6='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Users] SET [Email] = @p0, [Name] = @p1, [PasswordHash] = @p2, [Phone] = @p3, [ResetToken] = @p4, [RoleID] = @p5
+      OUTPUT 1
+      WHERE [UserID] = @p6;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (DbType = DateTime2), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [AuditLogs] ([Action], [Resource], [Timestamp], [UserID])
+      OUTPUT INSERTED.[AuditLogID]
+      VALUES (@p0, @p1, @p2, @p3);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@email='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[UserID], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Phone], [u].[ResetToken], [u].[RoleID]
+      FROM [Users] AS [u]
+      WHERE [u].[Email] = @email
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@p6='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Users] SET [Email] = @p0, [Name] = @p1, [PasswordHash] = @p2, [Phone] = @p3, [ResetToken] = @p4, [RoleID] = @p5
+      OUTPUT 1
+      WHERE [UserID] = @p6;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (DbType = DateTime2), @p3='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [AuditLogs] ([Action], [Resource], [Timestamp], [UserID])
+      OUTPUT INSERTED.[AuditLogID]
+      VALUES (@p0, @p1, @p2, @p3);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@token='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[UserID], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Phone], [u].[ResetToken], [u].[RoleID]
+      FROM [Users] AS [u]
+      WHERE [u].[ResetToken] = @token
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@token='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[UserID], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Phone], [u].[ResetToken], [u].[RoleID]
+      FROM [Users] AS [u]
+      WHERE [u].[ResetToken] = @token
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@p6='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Users] SET [Email] = @p0, [Name] = @p1, [PasswordHash] = @p2, [Phone] = @p3, [ResetToken] = @p4, [RoleID] = @p5
+      OUTPUT 1
+      WHERE [UserID] = @p6;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Int32), @p3='?' (Size = 4000), @p4='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [Orders] ([FulfillmentSteps], [OrderDate], [ProductID], [Status], [SubscriberID])
+      OUTPUT INSERTED.[OrderID]
+      VALUES (@p0, @p1, @p2, @p3, @p4);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (DbType = Int32), @p6='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [Subscribers] ([CustomerId], [CustomerId1], [DeviceId], [IMSI], [MSISDN], [SIMStatus], [Status])
+      OUTPUT INSERTED.[SubscriberId]
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@p='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [s].[SubscriberId], [s].[CustomerId], [s].[CustomerId1], [s].[DeviceId], [s].[IMSI], [s].[MSISDN], [s].[SIMStatus], [s].[Status]
+      FROM [Subscribers] AS [s]
+      WHERE [s].[SubscriberId] = @p
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@p7='?' (DbType = Int32), @p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (DbType = Int32), @p6='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Subscribers] SET [CustomerId] = @p0, [CustomerId1] = @p1, [DeviceId] = @p2, [IMSI] = @p3, [MSISDN] = @p4, [SIMStatus] = @p5, [Status] = @p6
+      OUTPUT 1
+      WHERE [SubscriberId] = @p7;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [NetworkResources] ([AllocatedTo], [Capacity], [Location], [NetworkResourceType], [Status])
+      OUTPUT INSERTED.[NetworkResourceId]
+      VALUES (@p0, @p1, @p2, @p3, @p4);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@p='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [n].[NetworkResourceId], [n].[AllocatedTo], [n].[Capacity], [n].[Location], [n].[NetworkResourceType], [n].[Status]
+      FROM [NetworkResources] AS [n]
+      WHERE [n].[NetworkResourceId] = @p
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@p2='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [NetworkResources] SET [Location] = @p0, [NetworkResourceType] = @p1
+      OUTPUT 1
+      WHERE [NetworkResourceId] = @p2;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@customerId='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [c].[CustomerId], [c].[ContactInfo], [c].[KYCStatus], [c].[Name], [c].[Type]
+      FROM [Customers] AS [c]
+      WHERE [c].[CustomerId] = @customerId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@p4='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Customers] SET [ContactInfo] = @p0, [KYCStatus] = @p1, [Name] = @p2, [Type] = @p3
+      OUTPUT 1
+      WHERE [CustomerId] = @p4;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [ProvisioningTasks] ([MSISDN], [OrderId], [ResourceType], [Status], [SubscriberId], [TargetSubsystem])
+      OUTPUT INSERTED.[ProvisioningTaskId]
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@kpiReportscope='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT [k].[KPIReportId], [k].[GeneratedDate], [k].[Metrics], [k].[Scope]
+      FROM [KPIReports] AS [k]
+      WHERE [k].[Scope] = @kpiReportscope
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@AnalyticsDatasetid='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [a].[AnalyticsDatasetId], [a].[LastRefreshed], [a].[Name], [a].[Schema]
+      FROM [AnalyticsDatasets] AS [a]
+      WHERE [a].[AnalyticsDatasetId] = @AnalyticsDatasetid
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@AnalyticsDatasetdto_DatasetID='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [a].[AnalyticsDatasetId], [a].[LastRefreshed], [a].[Name], [a].[Schema]
+      FROM [AnalyticsDatasets] AS [a]
+      WHERE [a].[AnalyticsDatasetId] = @AnalyticsDatasetdto_DatasetID
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@p1='?' (DbType = Int32), @p0='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [AnalyticsDatasets] SET [LastRefreshed] = @p0
+      OUTPUT 1
+      WHERE [AnalyticsDatasetId] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[@orderId='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [o].[OrderID], [o].[FulfillmentSteps], [o].[OrderDate], [o].[ProductID], [o].[Status], [o].[SubscriberID]
+      FROM [Orders] AS [o]
+      WHERE [o].[OrderID] = @orderId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@order_OrderID='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [o].[OrderID], [o].[FulfillmentSteps], [o].[OrderDate], [o].[ProductID], [o].[Status], [o].[SubscriberID]
+      FROM [Orders] AS [o]
+      WHERE [o].[OrderID] = @order_OrderID
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@p2='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Orders] SET [FulfillmentSteps] = @p0, [Status] = @p1
+      OUTPUT 1
+      WHERE [OrderID] = @p2;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@orderId='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [o].[OrderID], [o].[FulfillmentSteps], [o].[OrderDate], [o].[ProductID], [o].[Status], [o].[SubscriberID]
+      FROM [Orders] AS [o]
+      WHERE [o].[OrderID] = @orderId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@order_OrderID='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [o].[OrderID], [o].[FulfillmentSteps], [o].[OrderDate], [o].[ProductID], [o].[Status], [o].[SubscriberID]
+      FROM [Orders] AS [o]
+      WHERE [o].[OrderID] = @order_OrderID
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@p2='?' (DbType = Int32), @p0='?' (Size = 4000), @p1='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Orders] SET [FulfillmentSteps] = @p0, [Status] = @p1
+      OUTPUT 1
+      WHERE [OrderID] = @p2;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@orderId='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [o].[OrderID], [o].[FulfillmentSteps], [o].[OrderDate], [o].[ProductID], [o].[Status], [o].[SubscriberID]
+      FROM [Orders] AS [o]
+      WHERE [o].[OrderID] = @orderId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@order_OrderID='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [o].[OrderID], [o].[FulfillmentSteps], [o].[OrderDate], [o].[ProductID], [o].[Status], [o].[SubscriberID]
+      FROM [Orders] AS [o]
+      WHERE [o].[OrderID] = @order_OrderID
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[@p1='?' (DbType = Int32), @p0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Orders] SET [Status] = @p0
+      OUTPUT 1
+      WHERE [OrderID] = @p1;
