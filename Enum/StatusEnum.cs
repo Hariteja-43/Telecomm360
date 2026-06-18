@@ -1,5 +1,5 @@
-namespace Telecomm360.Enums;
-
+namespace Telecomm360.Enum
+{
 /// <summary>
 /// Represents the status of an invoice.
 /// </summary>
@@ -9,7 +9,6 @@ public enum InvoiceStatus
     Finalized,
     Paid
 }
-
 /// <summary>
 /// Represents the status of a payment.
 /// </summary>
@@ -30,4 +29,12 @@ public enum ReportStatus
     Processing,
     Completed,
     Failed
+}
+public enum StatusEnum
+    {
+        Open = 1,
+        Acknowledged = 2,
+        Cleared = 3,
+        Closed = 4
+    }
 }
