@@ -1,11 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Telecomm360.Data;
 using Telecomm360.DTO;
-using Telecomm360.Models;
-using Telecomm360.Repositories.Interface; 
+using Telecomm360.Model;
+using Telecomm360.Repositories.Interface;
 
 namespace Telecomm360.Repositories.Implementation
 {
@@ -18,24 +15,24 @@ namespace Telecomm360.Repositories.Implementation
             _context = context;
         }
 
-        public async Task<IEnumerable<Alarm>> GetAllAlarmsAsync(SearchDto searchDto)
+        public async Task<IEnumerable<Alarm>> GetAllAlarmsAsync(SearchDtos searchDtos)
         {
             var query = _context.Alarms.AsQueryable();
             
-            if (!string.IsNullOrEmpty(searchDto.SearchTerm))
+            if (!string.IsNullOrEmpty(searchDtos.SearchTerm))
             {
                 // 🛠️ Updated to exactly match your Alarm.cs properties
                 query = query.Where(a => 
-                    a.AlarmID.ToString().Contains(searchDto.SearchTerm) ||
-                    (a.Source != null && a.Source.Contains(searchDto.SearchTerm)) ||
-                    a.Severity.ToString().Contains(searchDto.SearchTerm) ||
-                    a.Status.ToString().Contains(searchDto.SearchTerm)
+                    a.AlarmID.ToString().Contains(searchDtos.SearchTerm) ||
+                    (a.Source != null && a.Source.Contains(searchDtos.SearchTerm)) ||
+                    a.Severity.ToString().Contains(searchDtos.SearchTerm) ||
+                    a.Status.ToString().Contains(searchDtos.SearchTerm)
                 );
             }
             
             return await query
-                .Skip((searchDto.PageNumber - 1) * searchDto.PageSize)
-                .Take(searchDto.PageSize)
+                .Skip((searchDtos.PageNumber - 1) * searchDtos.PageSize)
+                .Take(searchDtos.PageSize)
                 .ToListAsync();
         }
 

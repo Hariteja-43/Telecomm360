@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
-namespace Telecomm360.Middleware
+namespace Telecom360.Middleware
 {
     public class GlobalExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<GlobalExceptionMiddleware> _logger;
 
-        public GlobalExceptionMiddleware(RequestDelegate next)
+        public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -24,29 +22,33 @@ namespace Telecomm360.Middleware
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message);
                 await HandleExceptionAsync(context, ex);
             }
         }
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            var statusCode = exception switch
+            {
+                KeyNotFoundException => HttpStatusCode.NotFound,
+                UnauthorizedAccessException => HttpStatusCode.Unauthorized,
+                ArgumentException => HttpStatusCode.BadRequest,
+                _ => HttpStatusCode.InternalServerError
+            };
+
             context.Response.ContentType = "application/json";
-            var responseCode = HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)statusCode;
 
-            if (exception is KeyNotFoundException) responseCode = HttpStatusCode.NotFound;
-            else if (exception is UnauthorizedAccessException) responseCode = HttpStatusCode.Unauthorized;
-            else if (exception is ArgumentException) responseCode = HttpStatusCode.BadRequest;
+            var response = new
+            {
+                statusCode = context.Response.StatusCode,
+                message = exception.Message
+            };
 
-            context.Response.StatusCode = (int)responseCode;
-            
-            // 🛠️ FIXED: We are now grabbing the InnerException so we can see what SQL Server is complaining about!
-            var payload = JsonSerializer.Serialize(new 
-            { 
-                errorMessage = exception.Message,
-                sqlSecretMessage = exception.InnerException?.Message 
-            });
-            
-            return context.Response.WriteAsync(payload);
+            var json = JsonSerializer.Serialize(response);
+
+            return context.Response.WriteAsync(json);
         }
     }
 }

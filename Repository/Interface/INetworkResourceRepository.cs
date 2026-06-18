@@ -4,14 +4,14 @@ namespace Telecomm360.Repository.Interface
 {
     public interface INetworkResourceRepository
     {
-        Task<NetworkResource> AddResourceAsync(NetworkResource resource);
+        Task<NetworkResource> AddResourceAsync(NetworkResource networkResource);
 
         Task<List<NetworkResource>> GetAllResourcesAsync();
 
-        Task<NetworkResource?> GetResourceByIdAsync(int resourceId);
+        Task<NetworkResource?> GetResourceByIdAsync(int networkResourceId);
 
-        Task UpdateResourceAsync(NetworkResource resource);
+        Task UpdateResourceAsync(NetworkResource networkResource);
 
-        Task<bool> DeleteResourceAsync(int resourceId);
+        Task<bool> DeleteResourceAsync(int networkResourceId);
     }
 }

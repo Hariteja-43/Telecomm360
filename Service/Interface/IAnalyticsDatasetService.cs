@@ -1,6 +1,8 @@
+using Telecomm360.DTO;
 using Telecomm360.DTOs;
 
-namespace Telecomm360.Services.Interfaces;
+namespace Telecomm360.Service.Interfaces
+{
 
 public interface IAnalyticsService
 {
@@ -8,4 +10,5 @@ public interface IAnalyticsService
     AnalyticsDatasetDto? GetAnalyticsDataset(int AnalyticsDatasetid);
     AnalyticsDatasetDto CreateAnalyticsDataset(AnalyticsDatasetDto AnalyticsDatasetDtodto);
     AnalyticsDatasetDto? RefreshAnalyticsDataset(int AnalyticsDatasetid);
+}
 }

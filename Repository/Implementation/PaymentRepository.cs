@@ -1,6 +1,6 @@
 
 using Telecomm360.Data;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repository.Interfaces;
 using Telecomm360.DTOs;
 

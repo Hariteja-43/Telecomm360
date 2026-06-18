@@ -1,6 +1,6 @@
 using Telecom360.DTO.Retention;
 
-namespace Telecom360.Services.Interface
+namespace Telecom360.Service.Interface
 {
     public interface IRetentionPolicyService
     {

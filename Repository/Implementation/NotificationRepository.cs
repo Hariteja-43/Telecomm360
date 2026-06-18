@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Telecomm360.Data;
 using Telecomm360.DTO;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repositories.Interface;
 
 namespace Telecomm360.Repositories.Implementation
@@ -18,14 +15,14 @@ namespace Telecomm360.Repositories.Implementation
             _context = context;
         }
 
-        public async Task<IEnumerable<Notification>> GetAllNotificationsAsync(SearchDto searchDto)
+        public async Task<IEnumerable<Notification>> GetAllNotificationsAsync(SearchDtos searchDtos)
         {
             var query = _context.Notifications.AsQueryable();
-            if (!string.IsNullOrEmpty(searchDto.SearchTerm))
+            if (!string.IsNullOrEmpty(searchDtos.SearchTerm))
             {
-                query = query.Where(n => n.Message.Contains(searchDto.SearchTerm) || n.Channel.Contains(searchDto.SearchTerm));
+                query = query.Where(n => n.Message.Contains(searchDtos.SearchTerm) || n.Channel.Contains(searchDtos.SearchTerm));
             }
-            return await query.Skip((searchDto.PageNumber - 1) * searchDto.PageSize).Take(searchDto.PageSize).ToListAsync();
+            return await query.Skip((searchDtos.PageNumber - 1) * searchDtos.PageSize).Take(searchDtos.PageSize).ToListAsync();
         }
 
         public async Task<Notification> GetNotificationByIdAsync(long notificationId)

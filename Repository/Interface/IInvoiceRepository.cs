@@ -1,4 +1,4 @@
-using Telecomm360.Models;
+using Telecomm360.Model;
 
 namespace Telecomm360.Repository.Interfaces;
 

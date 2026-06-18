@@ -1,10 +1,12 @@
 using System;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repository.Interfaces;
-using Telecomm360.Services.Interfaces;
+using Telecomm360.Service.Interfaces;
 using Telecomm360.DTOs;
+using Telecomm360.DTO;
 
-namespace Telecomm360.Services;
+namespace Telecomm360.Service.Implementation
+{
 
 public class KPIReportService : IKPIReportService
 {
@@ -23,31 +25,32 @@ public class KPIReportService : IKPIReportService
     }
 
     //  Get report by ID
-    public KPIReportDto? GetKPIReportById(int KPIReportid)
+    public KPIReportDto? GetKPIReportById(int kpiReportId)
     {
-        return _repo.GetKPIReportById(KPIReportid);
+        return _repo.GetKPIReportById(kpiReportId);
     }
 
     //  Get reports by scope (ARPU, churn, etc.)
-    public List<KPIReportDto> GetKPIReportByScope(string KPIReportscope)
+    public List<KPIReportDto> GetKPIReportByScope(string kpiReportscope)
     {
-        return _repo.GetKPIReportByScope(KPIReportscope);
+        return _repo.GetKPIReportByScope(kpiReportscope);
     }
     //  Create report
-    public KPIReportDto CreateKPIReport(KPIReportDto KPIReportdto)
+    public KPIReportDto CreateKPIReport(KPIReportDto kpiReportDto)
     {
-        if (KPIReportdto == null)
-            throw new ArgumentNullException(nameof(KPIReportdto));
+        if (kpiReportDto == null)
+            throw new ArgumentNullException(nameof(kpiReportDto));
 
-        KPIReportdto.GeneratedDate = DateTime.UtcNow; // auto-set date
-        return _repo.CreateKPIReport(KPIReportdto);
+        kpiReportDto.GeneratedDate = DateTime.UtcNow; // auto-set date
+        return _repo.CreateKPIReport(kpiReportDto);
     }
     
 
     //  Delete report
-    public void DeleteKPIReport(int KPIReportid)
+    public void DeleteKPIReport(int kpiReportId)
     {
-        _repo.DeleteKPIReport(KPIReportid);
+        _repo.DeleteKPIReport(kpiReportId);
     }
+}
 }
 

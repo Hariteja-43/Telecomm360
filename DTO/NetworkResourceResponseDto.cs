@@ -3,9 +3,9 @@ namespace Telecomm360.DTO;
 
 public class NetworkResourceResponseDto
 {
-    public int ResourceId { get; set; }
+    public int NetworkResourceId { get; set; }
 
-    public string Type { get; set; } = string.Empty;
+    public string NetworkResourceType { get; set; } = string.Empty;
 
     public string Location { get; set; } = string.Empty;
 

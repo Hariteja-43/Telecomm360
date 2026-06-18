@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Telecomm360.Services.Interfaces;
+using Telecomm360.Service.Interfaces;
 using Telecomm360.DTOs;
-using Telecomm360.Enums;
 using Telecomm360.Constants;
+using Telecomm360.DTO;
 
 namespace Telecomm360.Controllers;
 
@@ -34,7 +34,7 @@ public class AnalyticsDatasetController : ControllerBase
         }
 
         var result = _service.CreateAnalyticsDataset(dto);
-        return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+        return CreatedAtAction(nameof(Get), new { id = result.DatasetID }, result);
     }
 
     [HttpGet("{id}")]

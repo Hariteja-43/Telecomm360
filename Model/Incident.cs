@@ -1,12 +1,13 @@
 using Telecomm360.Enum;
 
-namespace Telecomm360.Models
+namespace Telecomm360.Model
 {
     public class Incident
     {
-        public long IncidentID { get; set; }
-        public long AlarmID { get; set; }
-        public long AssignedTo { get; set; }
+        public int IncidentID { get; set; }
+        public int AlarmID { get; set; }
+        public Alarm Alarm { get; set; }
+        public int AssignedTo { get; set; }
         public PriorityEnum Priority { get; set; }
         public StatusEnum Status { get; set; }
         public string ResolutionNotes { get; set; } = string.Empty;

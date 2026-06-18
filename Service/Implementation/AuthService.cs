@@ -4,104 +4,119 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repositories.Interface;
-using Telecomm360.Services.Interface;
-
-namespace Telecomm360.Services.Implementation
+using Telecomm360.Service.Interface;
+ 
+namespace Telecomm360.Service.Implementation
 {
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuditLogService _auditLogService;
         private readonly IConfiguration _configuration;
-
+        private readonly IRoleRepository _roleRepository;
+ 
         public AuthService(
             IUserRepository userRepository,
             IAuditLogService auditLogService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _auditLogService = auditLogService;
             _configuration = configuration;
+            _roleRepository = roleRepository;
         }
-
+ 
+        // ✅ LOGIN
         public async Task<AuthResponse> LoginAsync(LoginRequest loginDto)
         {
             var user = await _userRepository.GetUserByEmailAsync(loginDto.Email);
-
+ 
             if (user == null || user.PasswordHash != loginDto.Password)
                 throw new UnauthorizedAccessException(MessageConstants.InvalidCredentials);
-
-            // ✅ JWT TOKEN CREATION
+ 
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role ?? "User") // Safe null-check for roles
+                new Claim(ClaimTypes.Role, user.RoleEntity?.Name ?? "User")
             };
-
-            // 🛠️ FIXED: Added a robust string fallback to prevent 'Parameter s cannot be null' crash
-            var secretKey = _configuration["Jwt:Key"] ?? "YourSuperSecretBackupKeyThatIsVeryLong123!";
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-
+ 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration["Jwt:Key"] ?? "YourSuperSecretBackupKeyThatIsVeryLong123!"
+            ));
+ 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
+ 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(3),
                 SigningCredentials = credentials
             };
-
+ 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
+ 
             string jwtToken = tokenHandler.WriteToken(token);
-
-            // ✅ AUDIT LOG
+ 
+            // ✅ Audit log
             await _auditLogService.CreateAuditLogAsync(new AuditLogCreateRequest
             {
                 UserId = user.UserID,
                 ActionPerformed = $"User Logged In: {user.Email}",
                 TargetResource = "AuthModule"
             });
-
+ 
             return new AuthResponse
             {
                 Token = jwtToken,
                 UserDisplayLabel = user.Name,
-                AssignedRole = user.Role
+                AssignedRole = user.RoleEntity?.Name ?? "User"
             };
         }
-
+ 
+        // ✅ REGISTER (FULL FIX)
         public async Task<bool> RegisterAsync(RegisterRequest registerDto)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(registerDto.Email);
-
+ 
             if (existingUser != null)
                 throw new ArgumentException(MessageConstants.EmailTaken);
-
+ 
+            // ✅ Get role from DB
+            var role = await _roleRepository.GetRoleByNameAsync(registerDto.DefaultRole ?? "User");
+ 
+            if (role == null)
+                throw new Exception("Role not found. Please insert roles in DB.");
+ 
+            // ✅ Create user
             var user = new User
             {
                 Name = registerDto.Name,
                 Email = registerDto.Email,
                 Phone = registerDto.Phone,
                 PasswordHash = registerDto.Password,
-                Role = registerDto.DefaultRole ?? "User" // Safe default assignment
+                RoleID = role.RoleID,
+                RoleEntity = role
             };
-
+ 
+            // ✅ Save user
             await _userRepository.AddUserAsync(user);
-
+ 
+            // ✅ Audit log
             await _auditLogService.CreateAuditLogAsync(new AuditLogCreateRequest
             {
+                UserId = user.UserID,
                 ActionPerformed = $"New User Registered: {user.Email}",
                 TargetResource = "AuthModule"
             });
-
+ 
             return true;
         }
-
+ 
         public async Task<bool> LogoutAsync(LogoutRequest dto)
         {
             await _auditLogService.CreateAuditLogAsync(new AuditLogCreateRequest
@@ -110,29 +125,31 @@ namespace Telecomm360.Services.Implementation
                 ActionPerformed = $"User Logout: {dto.UserId}",
                 TargetResource = "AuthModule"
             });
-
+ 
             return true;
         }
-
+ 
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordRequest dto)
         {
             var user = await _userRepository.GetUserByEmailAsync(dto.Email);
-
+ 
             if (user == null)
                 throw new KeyNotFoundException(MessageConstants.UserNotFound);
-
+ 
             user.ResetToken = "ResetToken";
+ 
             await _userRepository.UpdateUserAsync(user);
-
+ 
             await _auditLogService.CreateAuditLogAsync(new AuditLogCreateRequest
             {
+                UserId = user.UserID,
                 ActionPerformed = $"Password Reset Requested: {user.Email}",
                 TargetResource = "AuthModule"
             });
-
+ 
             return true;
         }
-
+ 
         public async Task<bool> ResetPasswordAsync(ResetPasswordRequest dto)
         {
             return await Task.FromResult(true);

@@ -1,5 +1,4 @@
 using Telecomm360.DTO;
-
 using Telecomm360.Model;
 using Telecomm360.Repository.Interface;
 using Telecomm360.Service.Interface;
@@ -20,11 +19,11 @@ namespace Telecomm360.Service.Implementation
         {
             var resource = new NetworkResource
             {
-                Type = request.Type,
+                NetworkResourceType = request.NetworkResourceType,
                 Location = request.Location,
                 Capacity = request.Capacity,
                 Status = Status.Available,
-                AllocatedTo = null
+                AllocatedTo = 0
             };
 
             var created = await _repository.AddResourceAsync(resource);
@@ -56,7 +55,7 @@ namespace Telecomm360.Service.Implementation
 
             if (existing == null) return null;
 
-            existing.Type = request.Type;
+            existing.NetworkResourceType = request.NetworkResourceType;
             existing.Location = request.Location;
             existing.Capacity = request.Capacity;
 
@@ -66,9 +65,9 @@ namespace Telecomm360.Service.Implementation
         }
 
        
-        public async Task<bool> DeleteResourceAsync(int resourceId)
+        public async Task<bool> DeleteResourceAsync(int networkResourceId)
         {
-            return await _repository.DeleteResourceAsync(resourceId);
+            return await _repository.DeleteResourceAsync(networkResourceId);
         }
 
         // ✅ Mapping Method
@@ -76,8 +75,8 @@ namespace Telecomm360.Service.Implementation
         {
             return new NetworkResourceResponseDto
             {
-                ResourceId = r.ResourceId,
-                Type = r.Type,
+                NetworkResourceId = r.NetworkResourceId,
+                NetworkResourceType = r.NetworkResourceType,
                 Location = r.Location,
                 Capacity = r.Capacity,
                 AllocatedTo = r.AllocatedTo,

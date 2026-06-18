@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using Telecomm360.DTO;
 using Telecomm360.DTOs;
 
-namespace Telecomm360.Services.Interface
+namespace Telecomm360.Service.Interface
 {
     public interface INotificationService
     {
-        Task<IEnumerable<NotificationResponse>> GetNotificationsAsync(SearchDto searchDto);
+        Task<IEnumerable<NotificationResponse>> GetNotificationsAsync(SearchDtos searchDtos);
         Task<NotificationResponse> GetNotificationByIdAsync(long notificationId);
         Task<NotificationResponse> CreateNotificationAsync(NotificationCreateRequest invoiceDto);
         Task<NotificationResponse> UpdateNotificationAsync(long notificationId, NotificationUpdateRequest invoiceDto);

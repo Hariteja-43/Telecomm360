@@ -1,6 +1,8 @@
+using Telecomm360.DTO;
 using Telecomm360.DTOs;
 
-namespace Telecomm360.Services.Interfaces;
+namespace Telecomm360.Service.Interfaces
+{
 
 public interface IInvoiceServices
 {
@@ -10,4 +12,5 @@ public interface IInvoiceServices
     InvoiceDto CreateInvoice(InvoiceDto Invoicedto);
     InvoiceDto UpdateInvoice(int Invoiceid, decimal Invoiceamount);
     InvoiceDto FinalizeInvoice(int Invoiceid);
+}
 }

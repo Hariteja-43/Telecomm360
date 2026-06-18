@@ -10,7 +10,7 @@ namespace Telecomm360.DTO
 
     public class AlarmResponse
     {
-        public string DisplayId { get; set; } = string.Empty;
+        public int DisplayId { get; set; } = 0;
         public string SourceNode { get; set; } = string.Empty;
         public string FaultSeverity { get; set; } = string.Empty;
         public string CurrentStatus { get; set; } = string.Empty;

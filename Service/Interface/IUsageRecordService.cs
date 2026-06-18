@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using Telecomm360.DTOs;
 
-namespace Telecomm360.Repository.Interfaces;
-
+namespace Telecomm360.Service.Interface
+{
 public interface IUsageRecordService
 {
     List<UsageRecordDto> GetAllUsageRecord(UsageRecordDto recordId);
@@ -10,4 +9,5 @@ public interface IUsageRecordService
     List<UsageRecordDto> GetUsageRecordBySubscriber(UsageRecordDto subscriberId); // Must be string subscriberId
     UsageRecordDto CreateUsageRecord(UsageRecordDto usageRecordDto);
     
+}
 }

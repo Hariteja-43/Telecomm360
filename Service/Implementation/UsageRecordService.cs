@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using Telecomm360.DTOs;
 using Telecomm360.Repository.Interfaces;
-using Telecomm360.Services.Interfaces;
-
-namespace Telecomm360.Services;
+using Telecomm360.Service.Interface;
+namespace Telecomm360.Service.Implementation
+{   
 
 public class UsageService : IUsageRecordService
 {
@@ -30,4 +29,4 @@ public class UsageService : IUsageRecordService
     public UsageRecordDto CreateUsageRecord(UsageRecordDto usageRecordDto)
         => _repo.CreateUsageRecord(usageRecordDto);
 }
-
+}

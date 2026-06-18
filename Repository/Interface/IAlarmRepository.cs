@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telecomm360.DTO;
-using Telecomm360.Models;
+using Telecomm360.Model;
 
 namespace Telecomm360.Repositories.Interface
 {
     public interface IAlarmRepository
     {
-        Task<IEnumerable<Alarm>> GetAllAlarmsAsync(SearchDto searchDto);
+        Task<IEnumerable<Alarm>> GetAllAlarmsAsync(SearchDtos searchDtos);
         Task<IEnumerable<Alarm>> GetActiveAlarmsAsync();
         Task AddAlarmAsync(Alarm alarm);
     }

@@ -1,7 +1,7 @@
 
 
 using Telecomm360.Data;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repository.Interfaces;
 using Telecomm360.DTOs;
 
@@ -18,7 +18,7 @@ public class AnalyticsDatasetRepository : IAnalyticsDatasetRepository
 
     private AnalyticsDatasetDto ToDto(AnalyticsDataset e) => new AnalyticsDatasetDto
     {
-        DatasetID = e.DatasetID,
+        DatasetID = e.AnalyticsDatasetId,
         LastRefreshed = e.LastRefreshed,
         Name = e.Name,
         Schema = e.Schema
@@ -26,7 +26,7 @@ public class AnalyticsDatasetRepository : IAnalyticsDatasetRepository
 
     private AnalyticsDataset ToEntity(AnalyticsDatasetDto d) => new AnalyticsDataset
     {
-        DatasetID = d.DatasetID,
+        AnalyticsDatasetId = d.DatasetID,
         LastRefreshed = d.LastRefreshed,
         Name = d.Name,
         Schema = d.Schema
@@ -36,7 +36,7 @@ public class AnalyticsDatasetRepository : IAnalyticsDatasetRepository
         => _context.Set<AnalyticsDataset>().ToList().Select(e => ToDto(e)).ToList();
 
     public AnalyticsDatasetDto? GetAnalyticsDatasetById(int AnalyticsDatasetid)
-        => _context.Set<AnalyticsDataset>().FirstOrDefault(x => x.DatasetID == AnalyticsDatasetid) is AnalyticsDataset e ? ToDto(e) : null;
+        => _context.Set<AnalyticsDataset>().FirstOrDefault(x => x.AnalyticsDatasetId == AnalyticsDatasetid) is AnalyticsDataset e ? ToDto(e) : null;
 
     public AnalyticsDatasetDto CreateAnalyticsDataset(AnalyticsDatasetDto AnalyticsDatasetDtodto)
     {
@@ -55,7 +55,7 @@ public class AnalyticsDatasetRepository : IAnalyticsDatasetRepository
 
     public void DeleteAnalyticsDataset(int AnalyticsDatasetid)
     {
-        var data = _context.Set<AnalyticsDataset>().FirstOrDefault(x => x.DatasetID == AnalyticsDatasetid);
+        var data = _context.Set<AnalyticsDataset>().FirstOrDefault(x => x.AnalyticsDatasetId == AnalyticsDatasetid);
         if (data != null)
         {
             _context.Remove(data);

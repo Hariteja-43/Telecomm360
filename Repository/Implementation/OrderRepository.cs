@@ -1,6 +1,5 @@
-using Telecom360.DTO.Order;
 using Microsoft.EntityFrameworkCore;
-using Telecom360.Models;
+using Telecom360.Model;
 using Telecom360.Repository.Interface;
 using Telecomm360.Data;
 
@@ -15,30 +14,26 @@ namespace Telecom360.Repository.Implementation
             _context = context;
         }
 
-        // ✅ GET ALL ORDERS
-        public async Task<IEnumerable<Order>> GetAllOrders(OrderResponseDto order)
+        public async Task<List<Order>> GetAllOrders()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders.AsNoTracking().ToListAsync();
         }
 
-        // ✅ GET ORDER BY ID
-        public async Task<Order> GetOrderById(int orderId)
+        public async Task<Order?> GetOrderById(int orderId)
         {
             return await _context.Orders
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.OrderID == orderId);
         }
 
-        // ✅ CREATE ORDER
         public async Task<Order> CreateOrder(Order order)
         {
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-
             return order;
         }
 
-        // ✅ UPDATE ORDER
-        public async Task<Order> UpdateOrder(Order order)
+        public async Task<Order?> UpdateOrder(Order order)
         {
             var existing = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderID == order.OrderID);
@@ -46,16 +41,38 @@ namespace Telecom360.Repository.Implementation
             if (existing == null)
                 return null;
 
-            // ✅ Update fields
-            existing.SubscriberID = order.SubscriberID;
-            existing.ProductID = order.ProductID;
-            existing.OrderDate = order.OrderDate;
-            existing.Status = order.Status;
-            existing.FulfillmentSteps = order.FulfillmentSteps;
+            if (order.SubscriberID != 0)
+                existing.SubscriberID = order.SubscriberID;
+
+            if (order.ProductID != 0)
+                existing.ProductID = order.ProductID;
+
+            if (order.OrderDate != default)
+                existing.OrderDate = order.OrderDate;
+
+            if (!string.IsNullOrWhiteSpace(order.Status))
+                existing.Status = order.Status;
+
+            if (!string.IsNullOrWhiteSpace(order.FulfillmentSteps))
+                existing.FulfillmentSteps = order.FulfillmentSteps;
 
             await _context.SaveChangesAsync();
 
             return existing;
+        }
+
+        public async Task<bool> DeleteOrder(int orderId)
+        {
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderID == orderId);
+
+            if (order == null)
+                return false;
+
+            _context.Orders.Remove(order);
+            var rows = await _context.SaveChangesAsync();
+
+            return rows > 0;
         }
     }
 }

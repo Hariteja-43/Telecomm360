@@ -1,4 +1,4 @@
-namespace Telecomm360.DTOs;
+namespace Telecomm360.DTO;
 public class SearchDto
 {
     public string? SubscriberName { get; set; }

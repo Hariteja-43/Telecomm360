@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
 using Telecomm360.Enum;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repositories.Interface;
-using Telecomm360.Services.Interface;
+using Telecomm360.Service.Interface;
 
-namespace Telecomm360.Services.Implementation
+namespace Telecomm360.Service.Implementation
 {
     public class IncidentService : IIncidentService
     {
@@ -19,12 +16,12 @@ namespace Telecomm360.Services.Implementation
             _incidentRepository = incidentRepository;
         }
 
-        public async Task<IEnumerable<IncidentResponse>> GetIncidentsAsync(SearchDto searchDto)
+        public async Task<IEnumerable<IncidentResponse>> GetIncidentsAsync(SearchDtos searchDtos)
         {
-            var list = await _incidentRepository.GetAllIncidentsAsync(searchDto);
+            var list = await _incidentRepository.GetAllIncidentsAsync(searchDtos);
             return list.Select(i => new IncidentResponse
             {
-                DisplayId = "INC-" + i.IncidentID,
+                DisplayId = i.IncidentID,
                 AssignedEngineer = "Eng_" + i.AssignedTo,
                 IncidentPriority = i.Priority.ToString(),
                 CurrentStatus = i.Status.ToString(),
@@ -36,7 +33,7 @@ namespace Telecomm360.Services.Implementation
         {
             var incident = new Incident
             {
-                AlarmID = long.Parse(invoiceDto.TargetAlarmId.Replace("ALM-", "")),
+                AlarmID = invoiceDto.TargetAlarmId,
                 AssignedTo = 101, // Simulated current authenticated user assignment
                 Priority = System.Enum.Parse<PriorityEnum>(invoiceDto.IncidentPriority, true),
                 Status = StatusEnum.Open
@@ -46,7 +43,7 @@ namespace Telecomm360.Services.Implementation
             
             return new IncidentResponse
             {
-                DisplayId = "INC-" + incident.IncidentID,
+                DisplayId = incident.IncidentID,
                 AssignedEngineer = "Eng_" + incident.AssignedTo,
                 IncidentPriority = incident.Priority.ToString(),
                 CurrentStatus = incident.Status.ToString(),
@@ -72,7 +69,7 @@ namespace Telecomm360.Services.Implementation
 
             return new IncidentResponse
             {
-                DisplayId = "INC-" + incident.IncidentID,
+                DisplayId = incident.IncidentID,
                 AssignedEngineer = "Eng_" + incident.AssignedTo,
                 IncidentPriority = incident.Priority.ToString(),
                 CurrentStatus = incident.Status.ToString(),

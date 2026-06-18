@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
-using Telecomm360.Services.Interface;
+using Telecomm360.Service.Interface;
 
 namespace Telecomm360.Controllers
 {
@@ -20,14 +20,14 @@ namespace Telecomm360.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetIncidents([FromQuery] SearchDto searchDto)
+        public async Task<IActionResult> GetIncidents([FromQuery] SearchDtos searchDtos)
         {
             if (!ModelState.IsValid)
             {
                 /* Explaining why ModelState configuration with standard evaluation logic is positioned directly here inside your function path: This ensures immediate evaluation validation runs on incoming arguments before execution continues. */
                 return BadRequest(MessageConstants.InvalidModel);
             }
-            var response = await _incidentService.GetIncidentsAsync(searchDto);
+            var response = await _incidentService.GetIncidentsAsync(searchDtos);
             return Ok(response);
         }
 

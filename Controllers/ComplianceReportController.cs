@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Telecom360.Services.Interface;
+using Telecom360.Service.Interface;
 using Telecom360.DTO.Compliance;
 using Telecom360.Constant;
 

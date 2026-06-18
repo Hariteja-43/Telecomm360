@@ -1,9 +1,9 @@
-using Telecom360.Services.Interface;
+using Telecom360.Service.Interface;
 using Telecom360.Repository.Interface;
 using Telecom360.DTO.Retention;
-using Telecom360.Models;
+using Telecom360.Model;
 
-namespace Telecom360.Services.Implementation
+namespace Telecom360.Service.Implementation
 {
     public class RetentionPolicyService : IRetentionPolicyService
     {
@@ -20,7 +20,7 @@ namespace Telecom360.Services.Implementation
 
             return policies.Select(p => new RetentionPolicyResponseDto
             {
-                PolicyID = p.PolicyID,
+                PolicyID = p.RetentionPeriodId,
                 DataType = p.DataType,
                 RetentionPeriod = p.RetentionPeriod,
                 AppliedFrom = p.AppliedFrom
@@ -34,7 +34,7 @@ namespace Telecom360.Services.Implementation
 
             return new RetentionPolicyResponseDto
             {
-                PolicyID = policy.PolicyID,
+                PolicyID = policy.RetentionPeriodId,
                 DataType = policy.DataType,
                 RetentionPeriod = policy.RetentionPeriod,
                 AppliedFrom = policy.AppliedFrom
@@ -55,7 +55,7 @@ namespace Telecom360.Services.Implementation
 
     return new RetentionPolicyResponseDto
     {
-        PolicyID = created.PolicyID, // ✅ DB-generated value
+        PolicyID = created.RetentionPeriodId, // ✅ DB-generated value
         DataType = created.DataType,
         RetentionPeriod = created.RetentionPeriod,
         AppliedFrom = created.AppliedFrom
@@ -74,7 +74,7 @@ namespace Telecom360.Services.Implementation
 
             return new RetentionPolicyResponseDto
             {
-                PolicyID = updated.PolicyID,
+                PolicyID = updated.RetentionPeriodId,
                 DataType = updated.DataType,
                 RetentionPeriod = updated.RetentionPeriod,
                 AppliedFrom = updated.AppliedFrom

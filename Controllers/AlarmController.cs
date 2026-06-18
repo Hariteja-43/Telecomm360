@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
-using Telecomm360.Services.Interface;
+using Telecomm360.Service.Interface;
 
 namespace Telecomm360.Controllers
 {
@@ -21,14 +21,14 @@ namespace Telecomm360.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,User")] // Allow both Admin and User roles to access alarms
-        public async Task<IActionResult> GetAlarms([FromQuery] SearchDto searchDto)
+        public async Task<IActionResult> GetAlarms([FromQuery] SearchDtos searchDtos)
         {
             if (!ModelState.IsValid)
             {
                
                 return BadRequest(MessageConstants.InvalidModel);
             }
-            var response = await _alarmService.GetAlarmsAsync(searchDto);
+            var response = await _alarmService.GetAlarmsAsync(searchDtos);
             return Ok(response);
         }
 

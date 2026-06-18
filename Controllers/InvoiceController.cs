@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Telecomm360.Services.Interfaces;
+using Telecomm360.Service.Interfaces;
 using Telecomm360.DTOs;
-using Telecomm360.Enums;
-using Telecomm360.Models;
 using Telecomm360.Constants;
+using Telecomm360.DTO;
 
 namespace Telecomm360.Controllers;
 

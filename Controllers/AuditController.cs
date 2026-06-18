@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
-using Telecomm360.Services.Interface;
+using Telecomm360.Service.Interface;
 
 namespace Telecomm360.Controllers
 {

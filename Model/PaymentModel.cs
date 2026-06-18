@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Telecomm360.Models;
-
+namespace Telecomm360.Model
+{
 public class Payment
 {
     [Key]
@@ -11,4 +11,5 @@ public class Payment
     public DateTime Date { get; set; }
     public string Method { get; set; } = "INTERNAL";
     public string Status { get; set; } = "CREATED";
+}
 }

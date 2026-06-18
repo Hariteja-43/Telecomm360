@@ -19,8 +19,4 @@ namespace Telecomm360.Service.Interface
         Task<bool> DeleteSubscriberAsync(int subscriberId);
         Task UpdateSubscriberAsync(int id, CreateSubscriberRequestDto dto);
     }
-
-    public class UpdateSubscriberRequestDto
-    {
-    }
 }

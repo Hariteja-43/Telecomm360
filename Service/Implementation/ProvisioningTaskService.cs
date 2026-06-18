@@ -7,7 +7,7 @@ using Telecomm360.Service.Interface;
 // using System.Collections.Generic;
 // using System.Threading.Tasks;
 
-namespace Telecomm360.Service
+namespace Telecomm360.Service.Implementation
 {
     public class ProvisioningTaskService : IProvisioningTaskService
     {
@@ -34,7 +34,7 @@ namespace Telecomm360.Service
 
             return new ProvisioningTaskResponseDto
             {
-                TaskId = created.TaskId,
+                ProvisioningTaskId = created.ProvisioningTaskId,
                 OrderId = created.OrderId,
                 SubscriberId = created.SubscriberId,
                 MSISDN = created.MSISDN,
@@ -50,7 +50,7 @@ namespace Telecomm360.Service
 
             return list.Select(t => new ProvisioningTaskResponseDto
             {
-                TaskId = t.TaskId,
+                ProvisioningTaskId = t.ProvisioningTaskId,
                 OrderId = t.OrderId,
                 SubscriberId = t.SubscriberId,
                 MSISDN = t.MSISDN,
@@ -69,7 +69,7 @@ namespace Telecomm360.Service
 
             return new ProvisioningTaskResponseDto
             {
-                TaskId = task.TaskId,
+                ProvisioningTaskId = task.ProvisioningTaskId,
                 OrderId = task.OrderId,
                 SubscriberId = task.SubscriberId,
                 MSISDN = task.MSISDN,
@@ -95,7 +95,7 @@ namespace Telecomm360.Service
 
             return new ProvisioningTaskResponseDto
             {
-                TaskId = existing.TaskId,
+                ProvisioningTaskId = existing.ProvisioningTaskId,
                 OrderId = existing.OrderId,
                 SubscriberId = existing.SubscriberId,
                 MSISDN = existing.MSISDN,

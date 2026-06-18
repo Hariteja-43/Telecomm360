@@ -4,11 +4,11 @@ public class CreateCustomerRequestDto
 {
 
     
-    public required string Name { get; set; } = string.Empty;
+    public  string Name { get; set; } = string.Empty;
 
-    public required string Type { get; set; } = string.Empty;
+    public  string Type { get; set; } = string.Empty;
 
-    public required string KYCStatus { get; set; } = string.Empty;
+    public  string KYCStatus { get; set; } = string.Empty;
 
-    public required string ContactInfo { get; set; } = string.Empty;
+    public  string ContactInfo { get; set; } = string.Empty;
 }

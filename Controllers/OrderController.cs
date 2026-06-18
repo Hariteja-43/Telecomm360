@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Telecom360.Services.Interface;
+using Telecom360.Service.Interface;
 using Telecom360.DTO.Order;
 using Telecom360.Constant;
-using Telecom360.Models;
 
 namespace Telecom360.Controllers
 {
@@ -17,118 +16,106 @@ namespace Telecom360.Controllers
             _service = service;
         }
 
-        //  GET /orders
+        // GET /orders
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders(OrderResponseDto order)
+        public async Task<IActionResult> GetAllOrders()
         {
-            try
-            {
-                var orders = await _service.GetAllOrders(order);
-                return Ok(orders);
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+            var orders = await _service.GetAllOrders();
+            return Ok(orders ?? new List<OrderResponseDto>());
         }
 
-        //  GET /orders/{id}
+        // GET /orders/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrderById(int orderId)
+        public async Task<IActionResult> GetOrderById([FromRoute] int orderId)
         {
-            try
-            {
-                var order = await _service.GetOrderById(orderId);
-                return order == null ? NotFound(ErrorMessages.NOT_FOUND) : Ok(order);
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+            var order = await _service.GetOrderById(orderId);
+
+            if (order == null)
+                return NotFound(ErrorMessages.NOT_FOUND);
+
+            return Ok(order);
         }
 
-        //  POST /orders
+        // POST /orders
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequestDto request)
         {
-            try
-            {
-                var createdOrder = await _service.CreateOrder(request);
-                return Ok(createdOrder);
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdOrder = await _service.CreateOrder(request);
+
+            return CreatedAtAction(
+                nameof(GetOrderById),
+                new { id = createdOrder.OrderID },
+                createdOrder
+            );
         }
 
-        //  PUT /orders/{id}
+        // PUT /orders/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int orderId, [FromBody] UpdateOrderRequestDto order)
+        public async Task<IActionResult> UpdateOrder([FromRoute] int id, [FromBody] UpdateOrderRequestDto request)
         {
-            try
-            {
-                var updatedOrder = await _service.UpdateOrder(orderId, order);
-                return updatedOrder == null ? NotFound(ErrorMessages.NOT_FOUND) : Ok(updatedOrder);
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updatedOrder = await _service.UpdateOrder(id, request);
+
+            if (updatedOrder == null)
+                return NotFound(ErrorMessages.NOT_FOUND);
+
+            return Ok(updatedOrder);
         }
 
-        //  DELETE /orders/{id} → Cancel order
+        // DELETE /orders/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> CancelOrder(int orderId)
+        public async Task<IActionResult> CancelOrder([FromRoute] int orderId)
         {
-            try
+            var success = await _service.CancelOrder(orderId);
+
+            if (!success)
+                return NotFound(ErrorMessages.NOT_FOUND);
+
+            return Ok(new OrderActionResponseDto
             {
-                var success = await _service.CancelOrder(orderId);
-                return !success ? NotFound(ErrorMessages.NOT_FOUND) : Ok("Order cancelled successfully");
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+                OrderID = orderId,
+                Status = "CANCELLED",
+                Message = "Order cancelled successfully"
+            });
         }
 
-        // ✅ POST /orders/{id}/submit → Trigger orchestration
+        // POST /orders/{id}/submit
         [HttpPost("{id}/submit")]
-        public async Task<IActionResult> SubmitOrder(int orderId)
+        public async Task<IActionResult> SubmitOrder([FromRoute] int orderId)
         {
-            try
+            var result = await _service.SubmitOrder(orderId);
+
+            if (!result)
+                return BadRequest("Order cannot be submitted in current state");
+
+            return Ok(new OrderActionResponseDto
             {
-                var result = await _service.SubmitOrder(orderId);
-               return !result ? NotFound(ErrorMessages.NOT_FOUND) : Ok(new OrderActionResponseDto
-                                {
-                                    Status = "SUBMITTED",
-                                    Message = "Order submitted successfully"
-                                });
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+                OrderID = orderId,
+                Status = "SUBMITTED",
+                Message = "Order submitted successfully"
+            });
         }
 
-        // ✅ POST /orders/{id}/fulfill → Mark fulfilled
+        // POST /orders/{id}/fulfill
         [HttpPost("{id}/fulfill")]
-        public async Task<IActionResult> FulfillOrder(int orderId)
+        public async Task<IActionResult> FulfillOrder([FromRoute] int orderId)
         {
-            try
+            var result = await _service.FulfillOrder(orderId);
+
+            if (!result)
+                return BadRequest("Order cannot be fulfilled in current state");
+
+            return Ok(new OrderActionResponseDto
             {
-                var result = await _service.FulfillOrder(orderId);
-                return !result ? NotFound(ErrorMessages.NOT_FOUND) : Ok(new OrderActionResponseDto
-                                                {
-                                                    OrderID = orderId,
-                                                    Status = "FULFILLED",
-                                                    Message = "Order fulfilled successfully"
-                                                });
-            }
-            catch
-            {
-                return StatusCode(500, ErrorMessages.SERVER_ERROR);
-            }
+                OrderID = orderId,
+                Status = "FULFILLED",
+                Message = "Order fulfilled successfully"
+            });
         }
     }
 }

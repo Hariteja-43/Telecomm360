@@ -1,5 +1,3 @@
-using System;
-
 namespace Telecomm360.DTOs
 {
     public class NotificationCreateRequest
@@ -21,8 +19,10 @@ namespace Telecomm360.DTOs
 
     public class NotificationResponse
     {
-        public required string DisplayId { get; set; }
-        public required string TargetSubscriberLabel { get; set; }
+        public long NotificationID { get; set; }
+        public long CustomerID { get; set; }
+        public string DisplayId { get; set; }
+        public string TargetSubscriberLabel { get; set; }
         public required string DeliveryChannel { get; set; }
         public required string MessageContent { get; set; }
         public required string CurrentStatus { get; set; }

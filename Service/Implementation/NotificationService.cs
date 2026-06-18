@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Telecomm360.Constants;
 using Telecomm360.DTOs;
 using Telecomm360.DTO;
 using Telecomm360.Enum;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repositories.Interface;
-using Telecomm360.Services.Interface;
+using Telecomm360.Service.Interface;
 
-namespace Telecomm360.Services.Implementation
+namespace Telecomm360.Service.Implementation
 {
     
     public class NotificationService : INotificationService
@@ -22,9 +18,9 @@ namespace Telecomm360.Services.Implementation
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<IEnumerable<NotificationResponse>> GetNotificationsAsync(SearchDto searchDto)
+        public async Task<IEnumerable<NotificationResponse>> GetNotificationsAsync(SearchDtos searchDtos)
         {
-            var list = await _notificationRepository.GetAllNotificationsAsync(searchDto);
+            var list = await _notificationRepository.GetAllNotificationsAsync(searchDtos);
             return list.Select(n => new NotificationResponse
             {
                 DisplayId = "NOTIF-" + n.NotificationID,
@@ -55,7 +51,7 @@ namespace Telecomm360.Services.Implementation
         {
             var n = new Notification
             {
-                CustomerID = 101,
+                SubscriberID = 101,
                 Channel = invoiceDto.DeliveryChannel,
                 Message = invoiceDto.MessageContent,
                 Status = NotificationStatusEnum.Pending,
@@ -64,8 +60,8 @@ namespace Telecomm360.Services.Implementation
             await _notificationRepository.AddNotificationAsync(n);
             return new NotificationResponse
             {
-                DisplayId = "NOTIF-" + n.NotificationID,
-                TargetSubscriberLabel = "Sub_" + n.CustomerID,
+                NotificationID = n.NotificationID,
+                CustomerID = n.CustomerID,
                 DeliveryChannel = n.Channel,
                 MessageContent = n.Message,
                 CurrentStatus = n.Status.ToString(),

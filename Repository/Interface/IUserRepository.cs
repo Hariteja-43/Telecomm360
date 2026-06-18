@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Telecomm360.Models;
+using Telecomm360.Model;
 
 namespace Telecomm360.Repositories.Interface
 {

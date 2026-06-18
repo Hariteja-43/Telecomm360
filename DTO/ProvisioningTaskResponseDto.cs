@@ -4,9 +4,9 @@ namespace Telecomm360.DTO;
 
 public class ProvisioningTaskResponseDto
 {
-    public int TaskId { get; set; }
+    public int ProvisioningTaskId { get; set; }
 
-    public string OrderId { get; set; } = string.Empty;
+    public int OrderId { get; set; } 
 
     public int SubscriberId { get; set; }
 

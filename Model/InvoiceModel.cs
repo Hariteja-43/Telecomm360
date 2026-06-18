@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Telecomm360.Models;
+namespace Telecomm360.Model
+{
 
 public class Invoice
 {
@@ -11,4 +12,5 @@ public class Invoice
     public DateTime PeriodEnd { get; set; }
     public decimal Amount { get; set; }
     public string Status { get; set; } = "DRAFT"; // DRAFT, FINALIZED, PAID
+}
 }

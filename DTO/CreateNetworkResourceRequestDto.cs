@@ -4,7 +4,7 @@ namespace Telecomm360.DTO;
 
 public class CreateNetworkResourceRequestDto
 {
-    public  required string Type { get; set; } = string.Empty;
+    public  required string NetworkResourceType { get; set; } = string.Empty;
 
     public required string Location { get; set; } = string.Empty;
 

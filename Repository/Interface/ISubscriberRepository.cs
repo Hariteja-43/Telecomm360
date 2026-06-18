@@ -1,6 +1,4 @@
 using Telecomm360.Model;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Telecomm360.Repository
 {

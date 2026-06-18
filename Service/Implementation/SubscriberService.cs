@@ -3,7 +3,7 @@ using Telecomm360.Model;
 using Telecomm360.Repository;
 using Telecomm360.Service.Interface;
 
-namespace Telecomm360.Service
+namespace Telecomm360.Service.Implementation
 {
     public class SubscriberService : ISubscriberService
     {

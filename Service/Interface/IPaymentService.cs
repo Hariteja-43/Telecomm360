@@ -1,9 +1,10 @@
-using System;
+using Telecomm360.DTO;
 using Telecomm360.DTOs;
 
 
 
-namespace Telecomm360.Services.Interfaces;
+namespace Telecomm360.Service.Interfaces
+{
 
 public interface IPaymentService
 {
@@ -18,4 +19,5 @@ public interface IPaymentService
     // Change from: List<PaymentDto> CreatePayment(PaymentDto payment);
 // Change to:
 
+}
 }

@@ -2,7 +2,7 @@ namespace Telecomm360.DTO
 {
     public class IncidentCreateRequest
     {
-        public string TargetAlarmId { get; set; } = string.Empty;
+        public int TargetAlarmId { get; set; } = 0;
         public string IncidentPriority { get; set; } = string.Empty;
     }
 
@@ -14,7 +14,7 @@ namespace Telecomm360.DTO
 
     public class IncidentResponse
     {
-        public string DisplayId { get; set; } = string.Empty;
+        public int DisplayId { get; set; } = 0;
         public string AssignedEngineer { get; set; } = string.Empty;
         public string IncidentPriority { get; set; } = string.Empty;
         public string CurrentStatus { get; set; } = string.Empty;

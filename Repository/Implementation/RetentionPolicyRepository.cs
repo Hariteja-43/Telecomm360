@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Telecom360.Models;
+using Telecom360.Model;
 using Telecom360.Repository.Interface;
 using Telecomm360.Data;
 
@@ -23,11 +23,11 @@ namespace Telecom360.Repository.Implementation
         }
 
         // ✅ GET POLICY BY ID
-        public async Task<RetentionPolicy> GetRetentionPolicyById(int policyID)
+        public async Task<RetentionPolicy> GetRetentionPolicyById(int retentionPeriodId)
         {
             return await _context.RetentionPolicies
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.PolicyID == policyID);
+                .FirstOrDefaultAsync(r => r.RetentionPeriodId == retentionPeriodId);
         }
 
         // ✅ CREATE POLICY
@@ -43,7 +43,7 @@ namespace Telecom360.Repository.Implementation
         public async Task<RetentionPolicy> UpdateRetentionPolicy(RetentionPolicy policy)
         {
             var existing = await _context.RetentionPolicies
-                .FirstOrDefaultAsync(r => r.PolicyID == policy.PolicyID);
+                .FirstOrDefaultAsync(r => r.RetentionPeriodId == policy.RetentionPeriodId);
 
             if (existing == null)
                 return null;

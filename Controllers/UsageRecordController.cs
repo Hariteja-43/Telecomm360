@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Telecomm360.DTOs;
-using Telecomm360.Services.Interfaces;
-using Telecomm360.Enums;
-using Telecomm360.Constants;
-using Telecomm360.Services;
-using Telecomm360.Repository.Interfaces;
+using Telecomm360.Service.Interface;
 
 namespace Telecomm360.Controllers;
 
@@ -29,7 +25,7 @@ public class UsageRecordController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<UsageRecordDto> GetUsageRecordById(int id)
     {
-        var record = _usageRecordService.GetUsageRecordById(new UsageRecordDto {  RecordID = id });
+        var record = _usageRecordService.GetUsageRecordById(new UsageRecordDto { UsageRecordId = id });
         if (record == null)
         {
             return NotFound();
@@ -38,7 +34,7 @@ public class UsageRecordController : ControllerBase
     }
 
     [HttpGet("subscriber/{subscriberId}")]
-    public ActionResult<List<UsageRecordDto>> GetUsageRecordsBySubscriber(string subscriberId)
+    public ActionResult<List<UsageRecordDto>> GetUsageRecordsBySubscriber(int subscriberId)
     {
         var records = _usageRecordService.GetUsageRecordBySubscriber(new UsageRecordDto { SubscriberID = subscriberId });
         return Ok(records);
@@ -48,7 +44,7 @@ public class UsageRecordController : ControllerBase
     public ActionResult<UsageRecordDto> CreateUsageRecord(UsageRecordDto usageRecordDto)
     {
         var createdRecord = _usageRecordService.CreateUsageRecord(usageRecordDto);
-        return CreatedAtAction(nameof(GetUsageRecordById), new { id = createdRecord.RecordID }, createdRecord);
+        return CreatedAtAction(nameof(GetUsageRecordById), new { id = createdRecord.UsageRecordId}, createdRecord);
     }
 }
 

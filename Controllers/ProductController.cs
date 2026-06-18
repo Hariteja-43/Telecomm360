@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Telecom360.Services.Interface;
+using Telecom360.Service.Interface;
 using Telecom360.Constant;
-using Telecom360.DTO;
 using Telecom360.DTO.Product;
 
 namespace Telecom360.Controllers
@@ -23,9 +22,14 @@ namespace Telecom360.Controllers
         {
             try
             {
-                var products = await _service.GetAllProducts(null);
+                var products = await _service.GetAllProducts();
 
-               return (products == null || !products.Any()) ? Ok(new List<object>()) : Ok(products);
+                if (products == null)
+                {
+                    products = new List<ProductResponseDto>();
+                }
+
+                return Ok(products);
             }
             catch
             {

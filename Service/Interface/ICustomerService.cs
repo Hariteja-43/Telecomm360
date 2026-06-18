@@ -1,6 +1,7 @@
 using Telecomm360.DTO;
 
-namespace Telecomm360.Service.Interface;
+namespace Telecomm360.Service.Interface
+{
 
 public interface ICustomerService
 {
@@ -13,4 +14,5 @@ public interface ICustomerService
     Task<CustomerResponseDto?> UpdateCustomerAsync(int customerId, UpdateCustomerRequestDto request);
 
     Task<bool> DeleteCustomerAsync(int customerId);
+}
 }

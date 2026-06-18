@@ -1,6 +1,6 @@
 namespace Telecomm360.DTO
 {
-    public class SearchDto
+    public class SearchDtos
     {
         public string? SearchTerm { get; set; }
         public int PageNumber { get; set; } = 1;

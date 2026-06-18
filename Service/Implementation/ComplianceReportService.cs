@@ -1,9 +1,9 @@
-using Telecom360.Services.Interface;
+using Telecom360.Service.Interface;
 using Telecom360.Repository.Interface;
 using Telecom360.DTO.Compliance;
-using Telecom360.Models;
+using Telecom360.Model;
 
-namespace Telecom360.Services.Implementation
+namespace Telecom360.Service.Implementation
 {
     public class ComplianceReportService : IComplianceReportService
     {
@@ -20,7 +20,7 @@ namespace Telecom360.Services.Implementation
 
             return reports.Select(r => new ComplianceReportResponseDto
             {
-                ReportId = r.ReportId,
+                ComplianceReportId = r.ComplianceReportId,
                 Type = r.Type,
                 Scope = r.Scope,
                 GeneratedDate = r.GeneratedDate
@@ -34,7 +34,7 @@ namespace Telecom360.Services.Implementation
 
             return new ComplianceReportResponseDto
             {
-                ReportId = report.ReportId,
+                ComplianceReportId = report.ComplianceReportId,
                 Type = report.Type,
                 Scope = report.Scope,
                 GeneratedDate = report.GeneratedDate
@@ -55,7 +55,7 @@ namespace Telecom360.Services.Implementation
 
             return new ComplianceReportResponseDto
             {
-                ReportId = created.ReportId,
+                ComplianceReportId = created.ComplianceReportId,
                 Type = created.Type,
                 Scope = created.Scope,
                 GeneratedDate = created.GeneratedDate

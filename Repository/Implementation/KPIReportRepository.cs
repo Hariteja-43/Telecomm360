@@ -1,6 +1,6 @@
 
 using Telecomm360.Data;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repository.Interfaces;
 using Telecomm360.DTOs;
 
@@ -18,7 +18,7 @@ public class KPIReportRepository : IKPIReportRepository
     // Map entity -> dto
     private KPIReportDto ToDto(KPIReport r) => new KPIReportDto
     {
-        ReportID = r.ReportID,
+        KPIReportId = r.KPIReportId,
         GeneratedDate = r.GeneratedDate,
         Metrics = r.Metrics,
         Scope = r.Scope
@@ -27,7 +27,7 @@ public class KPIReportRepository : IKPIReportRepository
     // Map dto -> entity
     private KPIReport ToEntity(KPIReportDto d) => new KPIReport
     {
-        ReportID = d.ReportID,
+        KPIReportId = d.KPIReportId,
         GeneratedDate = d.GeneratedDate,
         Metrics = d.Metrics,
         Scope = d.Scope
@@ -36,27 +36,27 @@ public class KPIReportRepository : IKPIReportRepository
     public List<KPIReportDto> GetAllKPIReport()
         => _context.Set<KPIReport>().ToList().Select(r => ToDto(r)).ToList();
 
-    public KPIReportDto? GetKPIReportById(int KPIReportid)
-        => _context.Set<KPIReport>().FirstOrDefault(x => x.ReportID == KPIReportid) is KPIReport r ? ToDto(r) : null;
+    public KPIReportDto? GetKPIReportById(int kpiReportId)
+        => _context.Set<KPIReport>().FirstOrDefault(x => x.KPIReportId == kpiReportId) is KPIReport r ? ToDto(r) : null;
 
-    public List<KPIReportDto> GetKPIReportByScope(string KPIReportscope)
+    public List<KPIReportDto> GetKPIReportByScope(string kpiReportscope)
         => _context.Set<KPIReport>()
-            .Where(x => x.Scope == KPIReportscope)
+            .Where(x => x.Scope == kpiReportscope)
             .ToList()
             .Select(r => ToDto(r))
             .ToList();
 
-    public KPIReportDto CreateKPIReport(KPIReportDto KPIReportdto)
+    public KPIReportDto CreateKPIReport(KPIReportDto kpiReportDto)
     {
-        var entity = ToEntity(KPIReportdto);
+        var entity = ToEntity(kpiReportDto);
         _context.Set<KPIReport>().Add(entity);
         _context.SaveChanges();
         return ToDto(entity);
     }
 
-    public void DeleteKPIReport(int KPIReportid)
+    public void DeleteKPIReport(int kpiReportId)
     {
-        var data = _context.Set<KPIReport>().FirstOrDefault(x => x.ReportID == KPIReportid);
+        var data = _context.Set<KPIReport>().FirstOrDefault(x => x.KPIReportId == kpiReportId);
         if (data != null)
         {
             _context.Remove(data);

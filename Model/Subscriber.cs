@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace Telecomm360.Model
 {
     public class Subscriber
@@ -10,8 +9,8 @@ namespace Telecomm360.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SubscriberId { get; set; }
 
-        [ForeignKey("Customer")]
         public int CustomerId { get; set; }
+        public Customer Customer { get; set; }
 
         public string MSISDN { get; set; } = string.Empty;
 
@@ -23,7 +22,5 @@ namespace Telecomm360.Model
 
         public Status Status { get; set; }
 
-        // Navigation to the Customer Table [customerId is the foreign key in this table]
-        public Customer? Customer { get; set; }
     }
 }

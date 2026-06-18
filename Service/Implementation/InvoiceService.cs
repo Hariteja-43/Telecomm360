@@ -1,9 +1,11 @@
+using Telecomm360.DTO;
 using Telecomm360.DTOs;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repository.Interfaces;
-using Telecomm360.Services.Interfaces;
+using Telecomm360.Service.Interfaces;
 
-namespace Telecomm360.Services;
+namespace Telecomm360.Service.Implementation
+{   
 
 public class InvoiceServices : IInvoiceServices
 {
@@ -98,4 +100,5 @@ public class InvoiceServices : IInvoiceServices
     public List<InvoiceDto> GetAllInvoice()
         => GetAllInvoice(default!);
 
+}
 }

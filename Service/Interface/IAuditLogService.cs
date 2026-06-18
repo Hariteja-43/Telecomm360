@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telecomm360.DTO;
 
-namespace Telecomm360.Services.Interface
+namespace Telecomm360.Service.Interface
 {
     public interface IAuditLogService
     {

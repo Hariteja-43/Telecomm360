@@ -1,24 +1,21 @@
 using Microsoft.EntityFrameworkCore;
-using Telecom360.Models;
+using Telecom360.Model;
 using Telecomm360.Model;
-using Telecomm360.Models;
 
-namespace Telecomm360.Data;
-
-public class AppDbContext : DbContext
+namespace Telecomm360.Data
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+    public class AppDbContext : DbContext
     {
-    }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
-    public DbSet<UsageRecord> UsageRecords { get; set; }
-    public DbSet<Invoice> Invoices { get; set; }
-    public DbSet<Payment> Payments { get; set; }
-
-    public DbSet<KPIReport> KPIReports { get; set; }
-    public DbSet<AnalyticsDataset> AnalyticsDatasets { get; set; }
-    
+        public DbSet<UsageRecord> UsageRecords { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<KPIReport> KPIReports { get; set; }
+        public DbSet<AnalyticsDataset> AnalyticsDatasets { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<Notification> Notifications { get; set; }
@@ -38,15 +35,76 @@ public class AppDbContext : DbContext
         {
             base.OnModelCreating(modelBuilder);
 
-            // 🔑 Explicitly define the primary keys for all entities
+            // =========================
+            // PRIMARY KEYS
+            // =========================
             modelBuilder.Entity<User>().HasKey(u => u.UserID);
-            modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditID);
+            modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditLogID);
             modelBuilder.Entity<Notification>().HasKey(n => n.NotificationID);
             modelBuilder.Entity<RoleEntity>().HasKey(r => r.RoleID);
             modelBuilder.Entity<Alarm>().HasKey(a => a.AlarmID);
             modelBuilder.Entity<Incident>().HasKey(i => i.IncidentID);
+            modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
+            modelBuilder.Entity<Order>().HasKey(o => o.OrderID);
+            modelBuilder.Entity<ComplianceReport>().HasKey(c => c.ComplianceReportId);
+            modelBuilder.Entity<RetentionPolicy>().HasKey(r => r.RetentionPeriodId);
 
-            // 🔄 1. Alarm Enums -> Saved as Strings in Database
+            // =========================
+            // FOREIGN KEYS
+            // =========================
+
+            // 🔹 User → Role
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.RoleEntity)
+                .WithMany()
+                .HasForeignKey(u => u.RoleID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 🔹 AuditLog → User FIXED
+            modelBuilder.Entity<AuditLog>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔹 Notification → Subscriber
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Subscriber)
+                .WithMany()
+                .HasForeignKey(n => n.SubscriberID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔹 Incident → Alarm
+            modelBuilder.Entity<Incident>()
+                .HasOne(i => i.Alarm)
+                .WithMany()
+                .HasForeignKey(i => i.AlarmID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔹 Order → Product
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Product)
+                .WithMany()
+                .HasForeignKey(o => o.ProductID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 🔹 Subscriber → Customer FIXED naming
+            modelBuilder.Entity<Subscriber>()
+                .HasOne(s => s.Customer)
+                .WithMany()
+                .HasForeignKey(s => s.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔹 ProvisioningTask → Order FIXED FK NAME
+            modelBuilder.Entity<ProvisioningTask>()
+                .HasOne(p => p.Order)
+                .WithMany()
+                .HasForeignKey(p => p.OrderId) // must match property EXACTLY
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // =========================
+            // ENUM → STRING
+            // =========================
             modelBuilder.Entity<Alarm>()
                 .Property(a => a.Severity)
                 .HasConversion<string>();
@@ -55,104 +113,21 @@ public class AppDbContext : DbContext
                 .Property(a => a.Status)
                 .HasConversion<string>();
 
-            // 🔄 2. Incident Priority Enum -> Saved as String in Database
-            // (Note: Change 'Priority' if your model uses a name like 'IncidentPriority')
             modelBuilder.Entity<Incident>()
-                .Property(i => i.Priority) 
+                .Property(i => i.Priority)
                 .HasConversion<string>();
 
-            // 🔄 3. Notification Status Enum -> Saved as String in Database
-            // (Note: Change 'Status' if your model uses a name like 'NotificationStatus')
             modelBuilder.Entity<Notification>()
                 .Property(n => n.Status)
                 .HasConversion<string>();
 
-            // 🔄 4. Role Status Enum -> Saved as String in Database
-            // (Note: Change 'Status' if your model uses a name like 'RoleStatus')
             modelBuilder.Entity<RoleEntity>()
                 .Property(r => r.Status)
                 .HasConversion<string>();
 
-             base.OnModelCreating(modelBuilder);
-
-            // ✅ Product Configuration
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.HasKey(p => p.ProductId);
-
-                entity.Property(p => p.Name)
-                      .IsRequired()
-                      .HasMaxLength(100);
-
-                entity.Property(p => p.Category)
-                      .HasMaxLength(50);
-
-                entity.Property(p => p.PriceModel)
-                      .HasMaxLength(50);
-
-                entity.Property(p => p.Status)
-                      .HasConversion<string>()
-                      .IsRequired();
-            });
-
-            // ✅ Order Configuration (UPDATED WITH FOREIGN KEY)
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity.HasKey(o => o.OrderID);
-
-                entity.HasIndex(o => o.ProductID);
-                // ✅ ✅ FOREIGN KEY RELATIONSHIP (IMPORTANT)
-                entity.HasOne(o => o.Product)          // Navigation property in Order
-                      .WithMany()                     // One Product → Many Orders
-                      .HasForeignKey(o => o.ProductID)
-                      .OnDelete(DeleteBehavior.Restrict); 
-                      // Use Cascade if you want deleting product to delete orders
-                  
-                  entity.HasIndex(o => o.SubscriberID);
-
-                entity.Property(o => o.Status)
-                      .IsRequired()
-                      .HasMaxLength(50);
-
-                entity.Property(o => o.FulfillmentSteps)
-                      .HasMaxLength(200);
-
-                entity.Property(o => o.OrderDate)
-                      .IsRequired();
-                
-            });
-
-            // ✅ Compliance Report Configuration
-            modelBuilder.Entity<ComplianceReport>(entity =>
-            {
-                entity.HasKey(c => c.ReportId);
-
-                entity.Property(c => c.Type)
-                      .IsRequired()
-                      .HasMaxLength(100);
-
-                entity.Property(c => c.Scope)
-                      .IsRequired()
-                      .HasMaxLength(200);
-
-                entity.Property(c => c.GeneratedDate)
-                      .IsRequired();
-            });
-
-            // ✅ Retention Policy Configuration
-            modelBuilder.Entity<RetentionPolicy>(entity =>
-            {
-                entity.HasKey(r => r.PolicyID);
-
-                entity.Property(r => r.DataType)
-                      .IsRequired()
-                      .HasMaxLength(100);
-
-                entity.Property(r => r.RetentionPeriod)
-                      .IsRequired();
-
-                entity.Property(r => r.AppliedFrom)
-                      .IsRequired();
-            });
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Status)
+                .HasConversion<string>();
         }
     }
+}

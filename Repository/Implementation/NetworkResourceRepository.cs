@@ -38,13 +38,13 @@ namespace Telecomm360.Repository.Implementation
         public async Task<bool> UpdateResourceAsync(NetworkResource resource)
         {
             var existing = await _context.NetworkResources
-                                         .FindAsync(resource.ResourceId);
+                                         .FindAsync(resource.NetworkResourceId);
 
             if (existing == null)
                 return false;
 
             // ✅ CORRECT FIELDS
-            existing.Type = resource.Type;
+            existing.NetworkResourceType = resource.NetworkResourceType;
             existing.Location = resource.Location;
             existing.Capacity = resource.Capacity;
             existing.AllocatedTo = resource.AllocatedTo;

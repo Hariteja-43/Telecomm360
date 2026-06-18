@@ -1,11 +1,11 @@
 using System;
 using Telecomm360.Enum;
 
-namespace Telecomm360.Models
+namespace Telecomm360.Model
 {
     public class Alarm
     {
-        public long AlarmID { get; set; }
+        public int AlarmID { get; set; }
         public string Source { get; set; } = string.Empty;
         public SeverityEnum Severity { get; set; }
         public DateTime Timestamp { get; set; }

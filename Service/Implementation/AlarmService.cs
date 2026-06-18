@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Telecomm360.DTO;
 using Telecomm360.Enum;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repositories.Interface;
-using Telecomm360.Services.Interface;
+using Telecomm360.Service.Interface;
 
-namespace Telecomm360.Services.Implementation
+namespace Telecomm360.Service.Implementation
 {
     public class AlarmService : IAlarmService
     {
@@ -22,12 +18,12 @@ namespace Telecomm360.Services.Implementation
             _alarmRepository = alarmRepository;
         }
 
-        public async Task<IEnumerable<AlarmResponse>> GetAlarmsAsync(SearchDto searchDto)
+        public async Task<IEnumerable<AlarmResponse>> GetAlarmsAsync(SearchDtos searchDtos)
         {
-            var list = await _alarmRepository.GetAllAlarmsAsync(searchDto);
+            var list = await _alarmRepository.GetAllAlarmsAsync(searchDtos);
             return list.Select(a => new AlarmResponse
             {
-                DisplayId = "ALM-" + a.AlarmID,
+                DisplayId = a.AlarmID,
                 SourceNode = a.Source,
                 FaultSeverity = a.Severity.ToString(),
                 CurrentStatus = a.Status.ToString(),
@@ -61,7 +57,7 @@ namespace Telecomm360.Services.Implementation
             
             return new AlarmResponse
             {
-                DisplayId = "ALM-" + alarm.AlarmID,
+                DisplayId = alarm.AlarmID,
                 SourceNode = alarm.Source,
                 FaultSeverity = alarm.Severity.ToString(),
                 CurrentStatus = alarm.Status.ToString(),

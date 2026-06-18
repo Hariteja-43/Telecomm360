@@ -1,6 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
-using Telecom360.Models;
+using Telecom360.Model;
 using Telecom360.Repository.Interface;
 using Telecomm360.Data;
 
@@ -28,7 +28,7 @@ namespace Telecom360.Repository.Implementation
         {
             return await _context.ComplianceReports
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.ReportId == complianceReportId);
+                .FirstOrDefaultAsync(r => r.ComplianceReportId == complianceReportId);
         }
 
         // ✅ CREATE REPORT

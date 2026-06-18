@@ -4,7 +4,7 @@ namespace Telecomm360.DTO;
 
 public class SubscriberResponseDto
 {
-    public int SubscriberId { get; set; }
+    public long SubscriberId { get; set; }
 
     public int CustomerId { get; set; }
 

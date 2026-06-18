@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Telecomm360.DTO;
-
-namespace Telecomm360.Services.Interface
+ 
+namespace Telecomm360.Service.Interface
 {
     public interface IAuthService
     {
@@ -10,6 +10,6 @@ namespace Telecomm360.Services.Interface
         Task<bool> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordDto);
         Task<bool> ResetPasswordAsync(ResetPasswordRequest resetPasswordDto);
         Task<bool> LogoutAsync(LogoutRequest logoutDto);
-        
+       
     }
 }

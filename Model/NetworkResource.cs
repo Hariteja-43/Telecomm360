@@ -7,15 +7,15 @@ namespace Telecomm360.Model
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ResourceId { get; set; }
+        public int NetworkResourceId { get; set; }
 
-        public string Type { get; set; } = string.Empty;
+        public string NetworkResourceType { get; set; } = string.Empty;
 
         public string Location { get; set; } = string.Empty;
 
         public int Capacity { get; set; }
 
-        public int? AllocatedTo { get; set; }   // SubscriberId (optional)
+        public int AllocatedTo { get; set; }   // SubscriberId (optional)
 
         public Status Status { get; set; }
     }

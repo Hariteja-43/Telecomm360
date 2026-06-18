@@ -1,9 +1,9 @@
-using Telecom360.Services.Interface;
+using Telecom360.Service.Interface;
 using Telecom360.Repository.Interface;
 using Telecom360.DTO.Order;
-using Telecom360.Models;
+using Telecom360.Model;
 
-namespace Telecom360.Services.Implementation
+namespace Telecom360.Service.Implementation
 {
     public class OrderService : IOrderService
     {
@@ -14,10 +14,9 @@ namespace Telecom360.Services.Implementation
             _repo = repo;
         }
 
-        // ✅ GET ALL ORDERS
-        public async Task<IEnumerable<OrderResponseDto>> GetAllOrders(OrderResponseDto order)
+        public async Task<IEnumerable<OrderResponseDto>> GetAllOrders()
         {
-            var orders = await _repo.GetAllOrders(order);
+            var orders = await _repo.GetAllOrders();
 
             return orders.Select(o => new OrderResponseDto
             {
@@ -30,10 +29,9 @@ namespace Telecom360.Services.Implementation
             });
         }
 
-        // ✅ GET ORDER BY ID
-        public async Task<OrderResponseDto?> GetOrderById(int orderid)
+        public async Task<OrderResponseDto?> GetOrderById(int orderId)
         {
-            var order = await _repo.GetOrderById(orderid);
+            var order = await _repo.GetOrderById(orderId);
             if (order == null) return null;
 
             return new OrderResponseDto
@@ -47,19 +45,17 @@ namespace Telecom360.Services.Implementation
             };
         }
 
-        // ✅ CREATE ORDER
         public async Task<OrderResponseDto> CreateOrder(CreateOrderRequestDto request)
         {
             var order = new Order
             {
-                
                 SubscriberID = request.SubscriberID,
                 ProductID = request.ProductID,
                 OrderDate = DateTime.UtcNow,
                 Status = "CREATED",
                 FulfillmentSteps = "INIT"
             };
-            //name change Order
+
             var created = await _repo.CreateOrder(order);
 
             return new OrderResponseDto
@@ -73,8 +69,7 @@ namespace Telecom360.Services.Implementation
             };
         }
 
-        // ✅ UPDATE ORDER
-        public async Task<OrderResponseDto> UpdateOrder(int orderId, UpdateOrderRequestDto request)
+        public async Task<OrderResponseDto?> UpdateOrder(int orderId, UpdateOrderRequestDto request)
         {
             var existing = await _repo.GetOrderById(orderId);
             if (existing == null) return null;
@@ -83,6 +78,7 @@ namespace Telecom360.Services.Implementation
             existing.FulfillmentSteps = request.FulfillmentSteps ?? existing.FulfillmentSteps;
 
             var updated = await _repo.UpdateOrder(existing);
+            if (updated == null) return null;
 
             return new OrderResponseDto
             {
@@ -95,10 +91,9 @@ namespace Telecom360.Services.Implementation
             };
         }
 
-        // ✅ CANCEL ORDER (DELETE LOGIC)
-        public async Task<bool> CancelOrder(int OrderId)
+        public async Task<bool> CancelOrder(int orderId)
         {
-            var existing = await _repo.GetOrderById(OrderId);
+            var existing = await _repo.GetOrderById(orderId);
             if (existing == null) return false;
 
             existing.Status = "CANCELLED";
@@ -107,7 +102,6 @@ namespace Telecom360.Services.Implementation
             return true;
         }
 
-        // ✅ SUBMIT ORDER (TRIGGERS ORCHESTRATION)
         public async Task<bool> SubmitOrder(int orderId)
         {
             var existing = await _repo.GetOrderById(orderId);
@@ -125,7 +119,6 @@ namespace Telecom360.Services.Implementation
             return false;
         }
 
-        // ✅ FULFILL ORDER
         public async Task<bool> FulfillOrder(int orderId)
         {
             var existing = await _repo.GetOrderById(orderId);

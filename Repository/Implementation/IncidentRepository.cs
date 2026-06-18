@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Telecomm360.Data;
 using Telecomm360.DTO;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repositories.Interface;
 
 namespace Telecomm360.Repositories.Implementation
@@ -18,14 +18,14 @@ namespace Telecomm360.Repositories.Implementation
             _context = context;
         }
 
-        public async Task<IEnumerable<Incident>> GetAllIncidentsAsync(SearchDto searchDto)
+        public async Task<IEnumerable<Incident>> GetAllIncidentsAsync(SearchDtos searchDtos)
         {
             var query = _context.Incidents.AsQueryable();
-            if (!string.IsNullOrEmpty(searchDto.SearchTerm))
+            if (!string.IsNullOrEmpty(searchDtos.SearchTerm))
             {
-                query = query.Where(i => i.ResolutionNotes.Contains(searchDto.SearchTerm));
+                query = query.Where(i => i.ResolutionNotes.Contains(searchDtos.SearchTerm));
             }
-            return await query.Skip((searchDto.PageNumber - 1) * searchDto.PageSize).Take(searchDto.PageSize).ToListAsync();
+            return await query.Skip((searchDtos.PageNumber - 1) * searchDtos.PageSize).Take(searchDtos.PageSize).ToListAsync();
         }
 
         public async Task<Incident> GetIncidentByIdAsync(long incidentId)

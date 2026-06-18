@@ -1,5 +1,5 @@
 using Telecomm360.Data;
-using Telecomm360.Models;
+using Telecomm360.Model;
 using Telecomm360.Repository.Interfaces;
 
 namespace Telecomm360.Repository;
