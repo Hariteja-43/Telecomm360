@@ -43,7 +43,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("ComplianceReportId");
 
-                    b.ToTable("ComplianceReports");
+                    b.ToTable("ComplianceReports", (string)null);
                 });
 
             modelBuilder.Entity("Telecom360.Model.Order", b =>
@@ -75,7 +75,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Telecom360.Model.Product", b =>
@@ -104,7 +104,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Telecom360.Model.RetentionPolicy", b =>
@@ -127,7 +127,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("RetentionPeriodId");
 
-                    b.ToTable("RetentionPolicies");
+                    b.ToTable("RetentionPolicies", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Alarm", b =>
@@ -155,7 +155,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("AlarmID");
 
-                    b.ToTable("Alarms");
+                    b.ToTable("Alarms", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.AnalyticsDataset", b =>
@@ -179,7 +179,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("AnalyticsDatasetId");
 
-                    b.ToTable("AnalyticsDatasets");
+                    b.ToTable("AnalyticsDatasets", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.AuditLog", b =>
@@ -208,7 +208,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Customer", b =>
@@ -237,7 +237,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Incident", b =>
@@ -269,7 +269,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("AlarmID");
 
-                    b.ToTable("Incidents");
+                    b.ToTable("Incidents", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Invoice", b =>
@@ -299,7 +299,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("InvoiceID");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.KPIReport", b =>
@@ -323,7 +323,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("KPIReportId");
 
-                    b.ToTable("KPIReports");
+                    b.ToTable("KPIReports", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.NetworkResource", b =>
@@ -353,7 +353,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("NetworkResourceId");
 
-                    b.ToTable("NetworkResources");
+                    b.ToTable("NetworkResources", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Notification", b =>
@@ -389,7 +389,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("SubscriberID");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Payment", b =>
@@ -419,7 +419,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("PaymentID");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.ProvisioningTask", b =>
@@ -457,7 +457,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("SubscriberId");
 
-                    b.ToTable("ProvisioningTasks");
+                    b.ToTable("ProvisioningTasks", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.RoleEntity", b =>
@@ -482,7 +482,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("RoleID");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.Subscriber", b =>
@@ -523,7 +523,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("CustomerId1");
 
-                    b.ToTable("Subscribers");
+                    b.ToTable("Subscribers", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.UsageRecord", b =>
@@ -552,7 +552,7 @@ namespace Telecomm360.Migrations
 
                     b.HasKey("UsageRecordId");
 
-                    b.ToTable("UsageRecords");
+                    b.ToTable("UsageRecords", (string)null);
                 });
 
             modelBuilder.Entity("Telecomm360.Model.User", b =>
@@ -590,7 +590,7 @@ namespace Telecomm360.Migrations
 
                     b.HasIndex("RoleID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Telecom360.Model.Order", b =>

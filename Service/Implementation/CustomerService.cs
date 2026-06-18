@@ -77,10 +77,10 @@ public class CustomerService : ICustomerService
             return null;
 
         // Mapping update
-        existing.Name = request.Name;
-        existing.Type = request.Type;
-        existing.KYCStatus = request.KYCStatus;
-        existing.ContactInfo = request.ContactInfo;
+        existing.Name = request.Name ?? existing.Name;
+        existing.Type = request.Type ?? existing.Type;
+        existing.KYCStatus = request.KYCStatus ?? existing.KYCStatus;
+        existing.ContactInfo = request.ContactInfo ?? existing.ContactInfo;
 
         var updated = await _repository.UpdateCustomerAsync(existing);
 

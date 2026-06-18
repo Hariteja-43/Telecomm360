@@ -1,4 +1,4 @@
-namespace Telecom360.DTO
+namespace Telecom360.DTO.Product
 {
     public class ProductDto
     {

@@ -62,7 +62,7 @@ public class InvoiceServices : IInvoiceServices
         var invoice = new Invoice
         {           
             CustomerID = Invoicedto.CustomerID,
-            Amount = Invoicedto.Invoiceamount,
+            Amount = Invoicedto.Amount,
             Status = "DRAFT" // Enum
         };
 

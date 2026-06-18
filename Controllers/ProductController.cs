@@ -26,7 +26,7 @@ namespace Telecom360.Controllers
 
                 if (products == null)
                 {
-                    products = new List<ProductResponseDto>();
+                    products = new List<ProductDto>();
                 }
 
                 return Ok(products);
@@ -39,11 +39,12 @@ namespace Telecom360.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int productId)
+        public async Task<IActionResult> GetProductById(int id)
         {
+            if (id <= 0) return BadRequest(ErrorMessages.INVALID_ID);
             try
             {
-                var data = await _service.GetProductById(productId);
+                var data = await _service.GetProductById(id);
                return data == null ? NotFound(ErrorMessages.NOT_FOUND) : Ok(data);
 
             }
@@ -56,6 +57,7 @@ namespace Telecom360.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct(CreateProductRequestDto request)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
                 var result = await _service.CreateProduct(request);
@@ -68,11 +70,12 @@ namespace Telecom360.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int productId, [FromBody] UpdateProductRequestDto request)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductRequestDto request)
         {
+            if (id <= 0) return BadRequest(ErrorMessages.INVALID_ID);
             try
             {
-                var result = await _service.UpdateProduct(productId, request);
+                var result = await _service.UpdateProduct(id, request);
                 return result == null ? NotFound(ErrorMessages.NOT_FOUND)  : Ok(result);
 
             }
@@ -83,11 +86,12 @@ namespace Telecom360.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult>  DeleteProduct(int productId)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
+            if (id <= 0) return BadRequest(ErrorMessages.INVALID_ID);
             try
             {
-                var success = await _service.DeleteProduct(productId);
+                var success = await _service.DeleteProduct(id);
                 return !success ? NotFound(ErrorMessages.NOT_FOUND) : Ok();
             }
             catch

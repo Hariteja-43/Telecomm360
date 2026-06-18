@@ -30,11 +30,12 @@ namespace Telecom360.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRetentionPolicyById(int policyID)
+        public async Task<IActionResult> GetRetentionPolicyById(int id)
         {
+            if (id <= 0) return BadRequest(ErrorMessages.INVALID_ID);
             try
             {
-                var policy = await _service.GetRetentionPolicyById(policyID);
+                var policy = await _service.GetRetentionPolicyById(id);
                 return policy == null ? NotFound(ErrorMessages.NOT_FOUND) : Ok(policy);
             }
             catch
@@ -57,11 +58,12 @@ namespace Telecom360.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRetentionPolicy(int policyID, UpdateRetentionPolicyRequestDto request)
+        public async Task<IActionResult> UpdateRetentionPolicy(int id, UpdateRetentionPolicyRequestDto request)
         {
+            if (id <= 0) return BadRequest(ErrorMessages.INVALID_ID);
             try
             {
-                    var result = await _service.UpdateRetentionPolicy(policyID, request);
+                    var result = await _service.UpdateRetentionPolicy(id, request);
 
                 return result == null ? NotFound(ErrorMessages.NOT_FOUND) : Ok(result);
             }

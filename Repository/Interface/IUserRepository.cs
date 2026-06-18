@@ -7,6 +7,7 @@ namespace Telecomm360.Repositories.Interface
     {
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByIdAsync(long empId);
+        Task<User> GetUserByResetTokenAsync(string token);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
     }

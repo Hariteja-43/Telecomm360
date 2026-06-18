@@ -48,8 +48,11 @@ public class AnalyticsDatasetRepository : IAnalyticsDatasetRepository
 
     public void UpdateAnalyticsDataset(AnalyticsDatasetDto AnalyticsDatasetdto)
     {
-        var entity = ToEntity(AnalyticsDatasetdto);
-        _context.Set<AnalyticsDataset>().Update(entity);
+        var entity = _context.Set<AnalyticsDataset>().FirstOrDefault(x => x.AnalyticsDatasetId == AnalyticsDatasetdto.DatasetID);
+        if (entity == null) return;
+        entity.LastRefreshed = AnalyticsDatasetdto.LastRefreshed;
+        entity.Name = AnalyticsDatasetdto.Name;
+        entity.Schema = AnalyticsDatasetdto.Schema;
         _context.SaveChanges();
     }
 

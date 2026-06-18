@@ -134,9 +134,9 @@ namespace Telecomm360.Service.Implementation
             var user = await _userRepository.GetUserByEmailAsync(dto.Email);
  
             if (user == null)
-                throw new KeyNotFoundException(MessageConstants.UserNotFound);
+                return false;
  
-            user.ResetToken = "ResetToken";
+            user.ResetToken = Guid.NewGuid().ToString();
  
             await _userRepository.UpdateUserAsync(user);
  
@@ -152,7 +152,16 @@ namespace Telecomm360.Service.Implementation
  
         public async Task<bool> ResetPasswordAsync(ResetPasswordRequest dto)
         {
-            return await Task.FromResult(true);
+            var user = await _userRepository.GetUserByResetTokenAsync(dto.Token);
+
+            if (user == null)
+                return false;
+
+            user.PasswordHash = dto.NewPassword;
+            user.ResetToken = string.Empty;
+
+            await _userRepository.UpdateUserAsync(user);
+            return true;
         }
     }
 }

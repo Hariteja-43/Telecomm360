@@ -63,7 +63,7 @@ namespace Telecomm360.Controllers
  
             var response = await _authService.RegisterAsync(registerDto);
  
-            return Ok(new { Message = "User Registered Successfully", Status = response });
+            return Ok(response);
         }
  
         // FORGOT PASSWORD
@@ -76,6 +76,8 @@ namespace Telecomm360.Controllers
             }
  
             var response = await _authService.ForgotPasswordAsync(forgotPasswordDto);
+            if (!response)
+                return NotFound(new { Message = "User not found." });
             return Ok(response);
         }
  
@@ -89,6 +91,8 @@ namespace Telecomm360.Controllers
             }
  
             var response = await _authService.ResetPasswordAsync(resetPasswordDto);
+            if (!response)
+                return BadRequest(new { Message = "Invalid or expired token." });
             return Ok(response);
         }
     }

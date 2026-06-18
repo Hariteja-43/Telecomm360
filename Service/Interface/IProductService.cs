@@ -5,10 +5,10 @@ namespace Telecom360.Service.Interface
 {
     public interface IProductService
     {
-        Task<List<ProductResponseDto>> GetAllProducts();
-        Task<ProductResponseDto> GetProductById(int productId);
-        Task<ProductResponseDto> CreateProduct(CreateProductRequestDto request);
-        Task<ProductResponseDto> UpdateProduct(int productId, UpdateProductRequestDto request);
+        Task<List<ProductDto>> GetAllProducts();
+        Task<ProductDto> GetProductById(int productId);
+        Task<ProductDto> CreateProduct(CreateProductRequestDto request);
+        Task<ProductDto> UpdateProduct(int productId, UpdateProductRequestDto request);
         Task<bool> DeleteProduct(int productId);
     }
 }

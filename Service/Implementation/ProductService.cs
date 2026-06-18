@@ -16,18 +16,18 @@ namespace Telecom360.Service.Implementation
         }
 
         // GET ALL PRODUCTS
-        public async Task<List<ProductResponseDto>> GetAllProducts()
+        public async Task<List<ProductDto>> GetAllProducts()
         {
             var products = await _repo.GetAllProducts();
 
             if (products == null || !products.Any())
-                return new List<ProductResponseDto>();
+                return new List<ProductDto>();
 
             return products.Select(MapToDto).ToList();
         }
 
         // GET PRODUCT BY ID
-        public async Task<ProductResponseDto?> GetProductById(int productId)
+        public async Task<ProductDto?> GetProductById(int productId)
         {
             var product = await _repo.GetProductById(productId);
 
@@ -35,7 +35,7 @@ namespace Telecom360.Service.Implementation
         }
 
         // CREATE PRODUCT
-        public async Task<ProductResponseDto?> CreateProduct(CreateProductRequestDto request)
+        public async Task<ProductDto?> CreateProduct(CreateProductRequestDto request)
         {
             if (request == null)
                 return null;
@@ -53,7 +53,7 @@ namespace Telecom360.Service.Implementation
         }
 
         // UPDATE PRODUCT
-        public async Task<ProductResponseDto?> UpdateProduct(int productId, UpdateProductRequestDto request)
+        public async Task<ProductDto?> UpdateProduct(int productId, UpdateProductRequestDto request)
         {
             if (request == null)
                 return null;
@@ -84,9 +84,9 @@ namespace Telecom360.Service.Implementation
         }
 
         // DTO MAPPING
-        private static ProductResponseDto MapToDto(Product product)
+        private static ProductDto MapToDto(Product product)
         {
-            return new ProductResponseDto
+            return new ProductDto
             {
                 ProductID = product.ProductId,
                 Name = product.Name,

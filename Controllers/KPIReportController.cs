@@ -28,16 +28,16 @@ public class KPIReportController : ControllerBase
 
     //  GET /api/reports/{id}
     [HttpGet("{id}")]
-    public IActionResult GetKPIReportById(int KPIReportId)
+    public IActionResult GetKPIReportById(int id)
     {
-        if(KPIReportId<=0)
+        if(id<=0)
         {
             return BadRequest(new { Message = KPIReportErrorMessages.InvalidReportId });
         }
-        var report = _service.GetKPIReportById(KPIReportId);    
+        var report = _service.GetKPIReportById(id);    
         if (report == null)
         {
-            return NotFound(new {Message = KPIReportErrorMessages.ReportNotFound(KPIReportId)});
+            return NotFound(new {Message = KPIReportErrorMessages.ReportNotFound(id)});
         }
 
         return Ok(report);
@@ -45,13 +45,13 @@ public class KPIReportController : ControllerBase
 
     //  GET /api/reports/scope/{scope}
     [HttpGet("scope/{scope}")]
-    public IActionResult GetKPIReportByScope(string KPIReportscope)
+    public IActionResult GetKPIReportByScope(string scope)
     {
-        if (String.IsNullOrWhiteSpace(KPIReportscope))
+        if (String.IsNullOrWhiteSpace(scope))
         {
             return BadRequest(new { Message = KPIReportErrorMessages.InvalidReportScope });
         }
-        var reports = _service.GetKPIReportByScope(KPIReportscope);
+        var reports = _service.GetKPIReportByScope(scope);
         return Ok(reports);
     }
 
@@ -69,38 +69,38 @@ public class KPIReportController : ControllerBase
 
     //  DELETE /api/reports/{id}
     [HttpDelete("{id}")]
-    public IActionResult Delete(int KPIReportId)
+    public IActionResult Delete(int id)
     {
-        if (KPIReportId <= 0)
+        if (id <= 0)
         {
             return BadRequest(new { Message = KPIReportErrorMessages.InvalidReportId });
         }
 
-        var existing = _service.GetKPIReportById(KPIReportId);
+        var existing = _service.GetKPIReportById(id);
 
         if (existing == null)
         {
-            return NotFound(new { Message = KPIReportErrorMessages.ReportNotFound(KPIReportId) });
+            return NotFound(new { Message = KPIReportErrorMessages.ReportNotFound(id) });
         }
 
-        _service.DeleteKPIReport(KPIReportId);
-        return Ok(new { Message = $"Report {KPIReportId} deleted successfully" });
+        _service.DeleteKPIReport(id);
+        return Ok(new { Message = $"Report {id} deleted successfully" });
     }
 
     //  GET /api/reports/{id}/export
     [HttpGet("{id}/export")]
-    public IActionResult Export(int KPIReportId)
+    public IActionResult Export(int id)
     {
-        if (KPIReportId <= 0)
+        if (id <= 0)
         {
             return BadRequest(new { Message = KPIReportErrorMessages.InvalidReportId });
         }
 
-        var report = _service.GetKPIReportById(KPIReportId);
+        var report = _service.GetKPIReportById(id);
 
         if (report == null)
         {
-            return NotFound(new { Message = KPIReportErrorMessages.ReportNotFound(KPIReportId) });
+            return NotFound(new { Message = KPIReportErrorMessages.ReportNotFound(id) });
         }
 
         return Ok(report);

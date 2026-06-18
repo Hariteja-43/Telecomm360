@@ -25,9 +25,9 @@ namespace Telecom360.Test.ControllerTest
         }
 
         // helper
-        private ProductResponseDto CreateProduct(int id = 1)
+        private ProductDto CreateProduct(int id = 1)
         {
-            return new ProductResponseDto
+            return new ProductDto
             {
                 ProductID = id,
                 Name = "Test Product",
@@ -43,7 +43,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task GetAllProducts_Valid_ReturnsOk()
         {
             _serviceMock.Setup(s => s.GetAllProducts())
-                        .ReturnsAsync(new List<ProductResponseDto>
+                        .ReturnsAsync(new List<ProductDto>
                         {
                             CreateProduct(1),
                             CreateProduct(2)
@@ -58,7 +58,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task GetAllProducts_Empty_ReturnsOk()
         {
             _serviceMock.Setup(s => s.GetAllProducts())
-                        .ReturnsAsync(new List<ProductResponseDto>());
+                        .ReturnsAsync(new List<ProductDto>());
 
             var result = await _controller.GetAllProducts();
 
@@ -69,7 +69,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task GetAllProducts_ServiceCalled()
         {
             _serviceMock.Setup(s => s.GetAllProducts())
-                        .ReturnsAsync(new List<ProductResponseDto>());
+                        .ReturnsAsync(new List<ProductDto>());
 
             await _controller.GetAllProducts();
 
@@ -93,7 +93,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task GetProductById_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.GetProductById(1))
-                        .ReturnsAsync((ProductResponseDto?)null);
+                        .ReturnsAsync((ProductDto?)null);
 
             var result = await _controller.GetProductById(1);
 
@@ -159,7 +159,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task UpdateProduct_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.UpdateProduct(1, It.IsAny<UpdateProductRequestDto>()))
-                        .ReturnsAsync((ProductResponseDto?)null);
+                        .ReturnsAsync((ProductDto?)null);
 
             var result = await _controller.UpdateProduct(1, new UpdateProductRequestDto());
 

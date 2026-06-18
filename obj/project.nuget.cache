@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lRVnCWvxARY=",
+  "dgSpecHash": "9aE1RjlNJcM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\2498956\\Desktop\\test\\Telecomm360\\Telecomm360.csproj",
+  "projectFilePath": "c:\\Users\\2498956\\Desktop\\test\\Telecomm360\\Telecomm360.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\2498956\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\2498956\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -88,9 +88,9 @@
       "code": "NU1510",
       "level": "Warning",
       "message": "PackageReference Microsoft.AspNetCore.Mvc.Core will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
-      "projectPath": "C:\\Users\\2498956\\Desktop\\test\\Telecomm360\\Telecomm360.csproj",
+      "projectPath": "c:\\Users\\2498956\\Desktop\\test\\Telecomm360\\Telecomm360.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\2498956\\Desktop\\test\\Telecomm360\\Telecomm360.csproj",
+      "filePath": "c:\\Users\\2498956\\Desktop\\test\\Telecomm360\\Telecomm360.csproj",
       "libraryId": "Microsoft.AspNetCore.Mvc.Core",
       "targetGraphs": [
         "net10.0"

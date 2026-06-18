@@ -116,9 +116,30 @@ namespace Telecomm360.Service.Implementation
             return true;
         }
 
-        public Task<SubscriberResponseDto?> UpdateSubscriberAsync(int subscriberId, UpdateSubscriberRequestDto request)
+        public async Task<SubscriberResponseDto?> UpdateSubscriberAsync(int id, UpdateSubscriberRequestDto dto)
         {
-            throw new NotImplementedException();
+            var existing = await _repository.GetSubscriberByIdAsync(id);
+
+            if (existing == null)
+                return null;
+
+            existing.CustomerId = dto.CustomerId ?? existing.CustomerId;
+            existing.MSISDN = dto.MSISDN ?? existing.MSISDN;
+            existing.IMSI = dto.IMSI ?? existing.IMSI;
+            existing.DeviceId = dto.DeviceId ?? existing.DeviceId;
+
+            await _repository.UpdateSubscriberAsync(existing);
+
+            return new SubscriberResponseDto
+            {
+                SubscriberId = existing.SubscriberId,
+                CustomerId = existing.CustomerId,
+                MSISDN = existing.MSISDN,
+                IMSI = existing.IMSI,
+                DeviceId = existing.DeviceId,
+                SIMStatus = existing.SIMStatus,
+                Status = existing.Status
+            };
         }
 
         Task ISubscriberService.UpdateSubscriberAsync(int id, CreateSubscriberRequestDto dto)

@@ -55,9 +55,9 @@ namespace Telecomm360.Service.Implementation
 
             if (existing == null) return null;
 
-            existing.NetworkResourceType = request.NetworkResourceType;
-            existing.Location = request.Location;
-            existing.Capacity = request.Capacity;
+            existing.NetworkResourceType = request.NetworkResourceType ?? existing.NetworkResourceType;
+            existing.Location = request.Location ?? existing.Location;
+            existing.Capacity = request.Capacity != 0 ? request.Capacity : existing.Capacity;
 
             await _repository.UpdateResourceAsync(existing);
 

@@ -23,12 +23,12 @@ namespace Telecom360.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetComplianceReportById(int policyID)
+        public async Task<IActionResult> GetComplianceReportById(int id)
         {
-            // policyID less than zero check send bad request
+            if (id <= 0) return BadRequest(ErrorMessages.INVALID_ID);
             try
             {
-                var report = await _service.GetComplianceReportById(policyID);
+                var report = await _service.GetComplianceReportById(id);
                 return report == null ? NotFound(ErrorMessages.NOT_FOUND) : Ok(report);
             }
             catch
