@@ -2,7 +2,7 @@ namespace Telecomm360.Enum
 {
     public enum RoleStatusEnum
     {
-        Active ,
+        Active,
         Inactive,
         Suspended
     }

@@ -102,6 +102,20 @@ namespace Telecomm360.Data
                 .HasForeignKey(p => p.OrderId) // must match property EXACTLY
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // 🔹 ProvisioningTask → Subscriber
+            modelBuilder.Entity<ProvisioningTask>()
+                .HasOne(p => p.Subscriber)
+                .WithMany()
+                .HasForeignKey(p => p.SubscriberId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔹 Order → Subscriber
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Subscriber)
+                .WithMany()
+                .HasForeignKey(o => o.SubscriberID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // =========================
             // ENUM → STRING
             // =========================

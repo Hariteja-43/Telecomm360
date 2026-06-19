@@ -32,9 +32,9 @@ public enum ReportStatus
 }
 public enum StatusEnum
     {
-        Open = 1,
-        Acknowledged = 2,
-        Cleared = 3,
-        Closed = 4
+        Open,
+        Acknowledged,
+        Cleared,
+        Closed
     }
 }

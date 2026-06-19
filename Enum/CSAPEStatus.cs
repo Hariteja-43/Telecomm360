@@ -1,9 +1,9 @@
 public enum Status
 {
     Available,
-    Allocated ,
+    Allocated,
     Active,
-    Inactive ,
-    Pending ,
-    Completed 
+    Inactive,
+    Pending,
+    Completed
 }

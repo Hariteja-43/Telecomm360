@@ -2,10 +2,10 @@ namespace Telecom360.Enum
 {
     public enum OrderStatus
     {
-        CREATED,
-        UPDATED,
-        SUBMITTED,
-        FULFILLED,
-        CANCELLED
+        Created,
+        Updated,
+        Submitted,
+        Fulfilled,
+        Cancelled
     }
 }

@@ -2,63 +2,60 @@
 bin/
 obj/
 out/
- 
+
 ## Visual Studio files
 .vs/
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
- 
+
 ## Rider / VS Code
 .idea/
 .vscode/
- 
+
 ## Logs
 *.log
- 
+
 ## NuGet packages
 *.nupkg
 packages/
 !packages/build/
- 
+
 ## .NET Core
 project.lock.json
 project.fragment.lock.json
 artifacts/
- 
+
 ## ASP.NET Scaffolding
 ScaffoldingReadMe.txt
- 
+
 ## IIS / Web Deploy
 publish/
 *.pubxml
- 
+
 ## OS generated files
 .DS_Store
 Thumbs.db
- 
+
 ## Environment files
 .env
 appsettings.Development.json
- 
+
 ## Secrets
 secrets.json
- 
+
 ## Test Results
 TestResults/
- 
+
 ## Coverage reports
 coverage/
- 
+
 ## Database files
 *.mdf
 *.ldf
 *.db
- 
+
 ## Temporary files
 *.tmp
 *.temp
-
-## Entity Framework Migrations
-Migrations/
