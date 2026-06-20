@@ -23,20 +23,19 @@ namespace Telecomm360.Test.ControllerTest
             _controller = new PaymentController(_serviceMock.Object);
         }
 
-        // helpers
-        private SearchDto CreateSearch()
-        {
-            return new SearchDto();
-        }
+        #region Helpers
+
+        private SearchDto CreateSearch() => new SearchDto();
 
         private PaymentDto CreateDto()
         {
             return new PaymentDto
             {
                 PaymentID = 1
-                // add other fields if required
             };
         }
+
+        #endregion
 
         #region GetAll
 
@@ -73,6 +72,19 @@ namespace Telecomm360.Test.ControllerTest
             _serviceMock.Verify(s => s.GetAllPayment(It.IsAny<SearchDto>()), Times.Once);
         }
 
+        [Test]
+        public void GetAll_ReturnsCorrectData()
+        {
+            var data = new List<PaymentDto> { CreateDto() };
+
+            _serviceMock.Setup(s => s.GetAllPayment(It.IsAny<SearchDto>()))
+                        .Returns(data);
+
+            var result = _controller.GetAll(CreateSearch()) as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(data));
+        }
+
         #endregion
 
         #region Create
@@ -105,6 +117,17 @@ namespace Telecomm360.Test.ControllerTest
             var result = _controller.Create(CreateDto()) as CreatedAtActionResult;
 
             Assert.That(result.ActionName, Is.EqualTo("Get"));
+        }
+
+        [Test]
+        public void Create_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreatePayment(It.IsAny<PaymentDto>()))
+                        .Returns(CreateDto());
+
+            _controller.Create(CreateDto());
+
+            _serviceMock.Verify(s => s.CreatePayment(It.IsAny<PaymentDto>()), Times.Once);
         }
 
         #endregion
@@ -141,6 +164,17 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
+        [Test]
+        public void Get_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetPaymentById(1))
+                        .Returns(CreateDto());
+
+            _controller.Get(1);
+
+            _serviceMock.Verify(s => s.GetPaymentById(1), Times.Once);
+        }
+
         #endregion
 
         #region Reconcile
@@ -173,6 +207,17 @@ namespace Telecomm360.Test.ControllerTest
             var result = _controller.Reconcile(1);
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public void Reconcile_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.Reconcile(1))
+                        .Returns(CreateDto());
+
+            _controller.Reconcile(1);
+
+            _serviceMock.Verify(s => s.Reconcile(1), Times.Once);
         }
 
         #endregion

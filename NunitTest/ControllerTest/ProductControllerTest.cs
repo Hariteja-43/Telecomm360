@@ -1,15 +1,11 @@
 using NUnit.Framework;
 using Moq;
-using Telecom360.Controllers;
-using Telecom360.Service.Interface;
-using Telecom360.DTO.Product;
-using Telecom360.DTO;
-using Telecom360.Constant;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Telecom360.DTO.Product;
+using Telecom360.Service.Interface;
+using Telecom360.Controllers;
 
-namespace Telecom360.Test.ControllerTest
+namespace Telecomm360.Test.ControllerTest
 {
     [TestFixture]
     public class ProductControllerTests
@@ -24,7 +20,8 @@ namespace Telecom360.Test.ControllerTest
             _controller = new ProductController(_serviceMock.Object);
         }
 
-        // helper
+        #region Helpers
+
         private ProductDto CreateProduct(int id = 1)
         {
             return new ProductDto
@@ -37,17 +34,15 @@ namespace Telecom360.Test.ControllerTest
             };
         }
 
-        // ---------------- GET ALL ----------------
+        #endregion
+
+        #region GET ALL
 
         [Test]
         public async Task GetAllProducts_Valid_ReturnsOk()
         {
             _serviceMock.Setup(s => s.GetAllProducts())
-                        .ReturnsAsync(new List<ProductDto>
-                        {
-                            CreateProduct(1),
-                            CreateProduct(2)
-                        });
+                        .ReturnsAsync(new List<ProductDto> { CreateProduct(), CreateProduct(2) });
 
             var result = await _controller.GetAllProducts();
 
@@ -76,7 +71,22 @@ namespace Telecom360.Test.ControllerTest
             _serviceMock.Verify(s => s.GetAllProducts(), Times.Once);
         }
 
-        // ---------------- GET BY ID ----------------
+        [Test]
+        public async Task GetAllProducts_ReturnsCorrectData()
+        {
+            var data = new List<ProductDto> { CreateProduct() };
+
+            _serviceMock.Setup(s => s.GetAllProducts())
+                        .ReturnsAsync(data);
+
+            var result = await _controller.GetAllProducts() as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(data));
+        }
+
+        #endregion
+
+        #region GET BY ID
 
         [Test]
         public async Task GetProductById_Valid_ReturnsOk()
@@ -93,7 +103,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task GetProductById_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.GetProductById(1))
-                        .ReturnsAsync((ProductDto?)null);
+                        .ReturnsAsync((ProductDto)null);
 
             var result = await _controller.GetProductById(1);
 
@@ -108,7 +118,20 @@ namespace Telecom360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
-        // ---------------- CREATE ----------------
+        [Test]
+        public async Task GetProductById_ServiceCalled()
+        {
+            _serviceMock.Setup(s => s.GetProductById(1))
+                        .ReturnsAsync(CreateProduct());
+
+            await _controller.GetProductById(1);
+
+            _serviceMock.Verify(s => s.GetProductById(1), Times.Once);
+        }
+
+        #endregion
+
+        #region CREATE
 
         [Test]
         public async Task CreateProduct_Valid_ReturnsOk()
@@ -142,7 +165,17 @@ namespace Telecom360.Test.ControllerTest
             _serviceMock.Verify(s => s.CreateProduct(It.IsAny<CreateProductRequestDto>()), Times.Once);
         }
 
-        // ---------------- UPDATE ----------------
+        [Test]
+        public async Task CreateProduct_NullRequest_ReturnsOk()
+        {
+            var result = await _controller.CreateProduct(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        #endregion
+
+        #region UPDATE
 
         [Test]
         public async Task UpdateProduct_Valid_ReturnsOk()
@@ -159,7 +192,7 @@ namespace Telecom360.Test.ControllerTest
         public async Task UpdateProduct_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.UpdateProduct(1, It.IsAny<UpdateProductRequestDto>()))
-                        .ReturnsAsync((ProductDto?)null);
+                        .ReturnsAsync((ProductDto)null);
 
             var result = await _controller.UpdateProduct(1, new UpdateProductRequestDto());
 
@@ -174,7 +207,20 @@ namespace Telecom360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
-        // ---------------- DELETE ----------------
+        [Test]
+        public async Task UpdateProduct_ServiceCalled()
+        {
+            _serviceMock.Setup(s => s.UpdateProduct(1, It.IsAny<UpdateProductRequestDto>()))
+                        .ReturnsAsync(CreateProduct());
+
+            await _controller.UpdateProduct(1, new UpdateProductRequestDto());
+
+            _serviceMock.Verify(s => s.UpdateProduct(1, It.IsAny<UpdateProductRequestDto>()), Times.Once);
+        }
+
+        #endregion
+
+        #region DELETE
 
         [Test]
         public async Task DeleteProduct_Valid_ReturnsOk()
@@ -205,5 +251,7 @@ namespace Telecom360.Test.ControllerTest
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
+
+        #endregion
     }
 }

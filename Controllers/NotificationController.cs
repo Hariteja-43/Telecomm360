@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
@@ -9,6 +10,7 @@ namespace Telecomm360.Controllers
 {
     [ApiController]
     [Route("api/notifications")]
+    [Authorize(Roles = "Admin")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;

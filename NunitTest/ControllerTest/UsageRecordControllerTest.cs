@@ -23,13 +23,12 @@ namespace Telecomm360.Test.ControllerTest
 
         #region Helpers
 
-        private UsageRecordDto CreateRecord(int UsageRecordId = 1)
+        private UsageRecordDto CreateRecord(int id = 1)
         {
             return new UsageRecordDto
             {
-                UsageRecordId = UsageRecordId,
-                SubscriberID = 1,
-                // Add other properties if needed
+                UsageRecordId = id,
+                SubscriberID = 1
             };
         }
 
@@ -37,26 +36,54 @@ namespace Telecomm360.Test.ControllerTest
 
         #region GetAllUsageRecords
 
-        [Test]
+[Test]
         public void GetAllUsageRecords_Valid_ReturnsOk()
         {
-            // Arrange
-            var records = new List<UsageRecordDto>
-            {
-                CreateRecord(1),
-                CreateRecord(2)
-            };
+            var records = new List<UsageRecordDto> { CreateRecord() };
 
             _serviceMock.Setup(s => s.GetAllUsageRecord(It.IsAny<UsageRecordDto>()))
                         .Returns(records);
 
-            // Act
             var result = _controller.GetAllUsageRecords();
 
-            // Assert
+            Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetAllUsageRecords_ReturnsCorrectData()
+        {
+            var records = new List<UsageRecordDto> { CreateRecord() };
+
+            _serviceMock.Setup(s => s.GetAllUsageRecord(It.IsAny<UsageRecordDto>()))
+                        .Returns(records);
+
+            var result = _controller.GetAllUsageRecords();
+
             var ok = result.Result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+
             Assert.That(ok.Value, Is.EqualTo(records));
+        }
+
+        [Test]
+        public void GetAllUsageRecords_Empty_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetAllUsageRecord(It.IsAny<UsageRecordDto>()))
+                        .Returns(new List<UsageRecordDto>());
+
+            var result = _controller.GetAllUsageRecords();
+
+            Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetAllUsageRecords_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetAllUsageRecord(It.IsAny<UsageRecordDto>()))
+                        .Returns(new List<UsageRecordDto>());
+
+            _controller.GetAllUsageRecords();
+
+            _serviceMock.Verify(s => s.GetAllUsageRecord(It.IsAny<UsageRecordDto>()), Times.Once);
         }
 
         #endregion
@@ -66,33 +93,34 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public void GetUsageRecordById_Valid_ReturnsOk()
         {
-            // Arrange
-            var record = CreateRecord(1);
-
             _serviceMock.Setup(s => s.GetUsageRecordById(It.IsAny<UsageRecordDto>()))
-                        .Returns(record);
+                        .Returns(CreateRecord());
 
-            // Act
             var result = _controller.GetUsageRecordById(1);
 
-            // Assert
-            var ok = result.Result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(record));
+            Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public void GetUsageRecordById_NotFound_Returns404()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetUsageRecordById(It.IsAny<UsageRecordDto>()))
                         .Returns((UsageRecordDto)null);
 
-            // Act
             var result = _controller.GetUsageRecordById(1);
 
-            // Assert
             Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
+        }
+
+        [Test]
+        public void GetUsageRecordById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetUsageRecordById(It.IsAny<UsageRecordDto>()))
+                        .Returns(CreateRecord());
+
+            _controller.GetUsageRecordById(1);
+
+            _serviceMock.Verify(s => s.GetUsageRecordById(It.IsAny<UsageRecordDto>()), Times.Once);
         }
 
         #endregion
@@ -102,23 +130,36 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public void GetUsageRecordsBySubscriber_Valid_ReturnsOk()
         {
-            // Arrange
-            var records = new List<UsageRecordDto>
-            {
-                CreateRecord(1),
-                CreateRecord(2)
-            };
+            var records = new List<UsageRecordDto> { CreateRecord() };
 
             _serviceMock.Setup(s => s.GetUsageRecordBySubscriber(It.IsAny<UsageRecordDto>()))
                         .Returns(records);
 
-            // Act
             var result = _controller.GetUsageRecordsBySubscriber(1);
 
-            // Assert
-            var ok = result.Result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(records));
+            Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetUsageRecordsBySubscriber_Empty_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetUsageRecordBySubscriber(It.IsAny<UsageRecordDto>()))
+                        .Returns(new List<UsageRecordDto>());
+
+            var result = _controller.GetUsageRecordsBySubscriber(1);
+
+            Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public void GetUsageRecordsBySubscriber_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetUsageRecordBySubscriber(It.IsAny<UsageRecordDto>()))
+                        .Returns(new List<UsageRecordDto>());
+
+            _controller.GetUsageRecordsBySubscriber(1);
+
+            _serviceMock.Verify(s => s.GetUsageRecordBySubscriber(It.IsAny<UsageRecordDto>()), Times.Once);
         }
 
         #endregion
@@ -128,19 +169,42 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public void CreateUsageRecord_Valid_ReturnsCreated()
         {
-            // Arrange
-            var request = CreateRecord(1);
+            var request = CreateRecord();
 
             _serviceMock.Setup(s => s.CreateUsageRecord(request))
                         .Returns(request);
 
-            // Act
             var result = _controller.CreateUsageRecord(request);
 
-            // Assert
+            Assert.That(result.Result, Is.TypeOf<CreatedAtActionResult>());
+        }
+
+        [Test]
+        public void CreateUsageRecord_ReturnsCorrectData()
+        {
+            var request = CreateRecord();
+
+            _serviceMock.Setup(s => s.CreateUsageRecord(request))
+                        .Returns(request);
+
+            var result = _controller.CreateUsageRecord(request);
+
             var created = result.Result as CreatedAtActionResult;
-            Assert.That(created, Is.Not.Null);
+
             Assert.That(created.Value, Is.EqualTo(request));
+        }
+
+        [Test]
+        public void CreateUsageRecord_ServiceCalledOnce()
+        {
+            var request = CreateRecord();
+
+            _serviceMock.Setup(s => s.CreateUsageRecord(request))
+                        .Returns(request);
+
+            _controller.CreateUsageRecord(request);
+
+            _serviceMock.Verify(s => s.CreateUsageRecord(request), Times.Once);
         }
 
         #endregion

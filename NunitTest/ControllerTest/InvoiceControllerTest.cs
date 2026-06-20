@@ -23,7 +23,7 @@ namespace Telecomm360.Test.ControllerTest
             _controller = new InvoiceController(_serviceMock.Object);
         }
 
-        // helpers
+        #region Helpers
 
         private SearchDto CreateSearch() => new SearchDto();
 
@@ -32,17 +32,20 @@ namespace Telecomm360.Test.ControllerTest
             return new InvoiceDto
             {
                 Id = id
-                // add required fields if applicable
             };
         }
+
+        #endregion
 
         #region GetAll
 
         [Test]
         public void GetAll_Valid_ReturnsOk()
         {
+            var data = new List<InvoiceDto> { CreateDto() };
+
             _serviceMock.Setup(s => s.GetAllInvoice(It.IsAny<SearchDto>()))
-                        .Returns(new List<InvoiceDto> { CreateDto() });
+                        .Returns(data);
 
             var result = _controller.GetAll(CreateSearch());
 
@@ -69,6 +72,19 @@ namespace Telecomm360.Test.ControllerTest
             _controller.GetAll(CreateSearch());
 
             _serviceMock.Verify(s => s.GetAllInvoice(It.IsAny<SearchDto>()), Times.Once);
+        }
+
+        [Test]
+        public void GetAll_ReturnsCorrectData()
+        {
+            var data = new List<InvoiceDto> { CreateDto() };
+
+            _serviceMock.Setup(s => s.GetAllInvoice(It.IsAny<SearchDto>()))
+                        .Returns(data);
+
+            var result = _controller.GetAll(CreateSearch()) as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(data));
         }
 
         #endregion
@@ -105,6 +121,17 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
+        [Test]
+        public void CreateInvoice_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateInvoice(It.IsAny<InvoiceDto>()))
+                        .Returns(CreateDto());
+
+            _controller.CreateInvoice(CreateDto());
+
+            _serviceMock.Verify(s => s.CreateInvoice(It.IsAny<InvoiceDto>()), Times.Once);
+        }
+
         #endregion
 
         #region GetInvoiceById
@@ -139,6 +166,17 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
+        [Test]
+        public void GetInvoiceById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetInvoiceById(1))
+                        .Returns(CreateDto());
+
+            _controller.GetInvoiceById(1);
+
+            _serviceMock.Verify(s => s.GetInvoiceById(1), Times.Once);
+        }
+
         #endregion
 
         #region Adjust
@@ -171,6 +209,17 @@ namespace Telecomm360.Test.ControllerTest
             var result = _controller.Adjust(1, 100);
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public void Adjust_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.UpdateInvoice(1, 100))
+                        .Returns(CreateDto());
+
+            _controller.Adjust(1, 100);
+
+            _serviceMock.Verify(s => s.UpdateInvoice(1, 100), Times.Once);
         }
 
         #endregion

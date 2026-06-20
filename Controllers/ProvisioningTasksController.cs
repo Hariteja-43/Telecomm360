@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Telecomm360.DTO;
 using Telecomm360.Service.Interface;
 using Telecomm360.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Telecomm360.Controllers
 {
     [ApiController]
     [Route("api/provisioningtasks")]
+    [Authorize(Roles = "ProvisioningEngineer")]
     public class ProvisioningTasksController : ControllerBase
     {
         private readonly IProvisioningTaskService _service;

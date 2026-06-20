@@ -23,7 +23,7 @@ namespace Telecomm360.Test.ControllerTest
             _controller = new CustomerController(_serviceMock.Object);
         }
 
-        // helpers
+        #region Helpers
 
         private CreateCustomerRequestDto CreateRequest()
         {
@@ -59,6 +59,8 @@ namespace Telecomm360.Test.ControllerTest
             };
         }
 
+        #endregion
+
         #region CreateCustomer
 
         [Test]
@@ -91,6 +93,21 @@ namespace Telecomm360.Test.ControllerTest
             await _controller.CreateCustomer(CreateRequest());
 
             _serviceMock.Verify(s => s.CreateCustomerAsync(It.IsAny<CreateCustomerRequestDto>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateCustomer_ReturnsCorrectData()
+        {
+            var response = CreateResponse();
+
+            _serviceMock.Setup(s => s.CreateCustomerAsync(It.IsAny<CreateCustomerRequestDto>()))
+                        .ReturnsAsync(response);
+
+            var result = await _controller.CreateCustomer(CreateRequest()) as OkObjectResult;
+
+            // CustomerController wraps response as { data = <dto> }
+            var wrapped = result.Value as dynamic;
+            Assert.That(wrapped.data, Is.EqualTo(response));
         }
 
         #endregion
@@ -157,11 +174,22 @@ namespace Telecomm360.Test.ControllerTest
         public async Task GetCustomerById_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.GetCustomerByIdAsync(1))
-                        .ReturnsAsync((CustomerResponseDto?)null);
+                        .ReturnsAsync((CustomerResponseDto)null);
 
             var result = await _controller.GetCustomerById(1);
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task GetCustomerById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetCustomerByIdAsync(1))
+                        .ReturnsAsync(CreateResponse());
+
+            await _controller.GetCustomerById(1);
+
+            _serviceMock.Verify(s => s.GetCustomerByIdAsync(1), Times.Once);
         }
 
         #endregion
@@ -191,7 +219,7 @@ namespace Telecomm360.Test.ControllerTest
         public async Task UpdateCustomer_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.UpdateCustomerAsync(1, It.IsAny<UpdateCustomerRequestDto>()))
-                        .ReturnsAsync((CustomerResponseDto?)null);
+                        .ReturnsAsync((CustomerResponseDto)null);
 
             var result = await _controller.UpdateCustomer(1, UpdateRequest());
 
@@ -230,6 +258,17 @@ namespace Telecomm360.Test.ControllerTest
             var result = await _controller.DeleteCustomer(1);
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task DeleteCustomer_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.DeleteCustomerAsync(1))
+                        .ReturnsAsync(true);
+
+            await _controller.DeleteCustomer(1);
+
+            _serviceMock.Verify(s => s.DeleteCustomerAsync(1), Times.Once);
         }
 
         #endregion

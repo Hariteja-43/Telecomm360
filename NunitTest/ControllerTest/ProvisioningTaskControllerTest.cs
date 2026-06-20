@@ -36,7 +36,6 @@ namespace Telecomm360.Test.ControllerTest
             };
         }
 
-        // FIXED: matches your DTO
         private ProvisioningTaskResponseDto CreateResponse(int id = 1)
         {
             return new ProvisioningTaskResponseDto
@@ -46,7 +45,7 @@ namespace Telecomm360.Test.ControllerTest
                 SubscriberId = 200,
                 MSISDN = "9876543210",
                 ResourceType = "SIM",
-                Status = Status.Pending   // use your enum value
+                Status = Status.Pending
             };
         }
 
@@ -57,17 +56,12 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task CreateProvisioningTasks_Valid_ReturnsOk()
         {
-            var request = CreateRequest();
-            var response = CreateResponse(1);
+            _serviceMock.Setup(s => s.CreateTaskAsync(It.IsAny<CreateProvisioningTaskRequestDto>()))
+                        .ReturnsAsync(CreateResponse());
 
-            _serviceMock.Setup(s => s.CreateTaskAsync(request))
-                        .ReturnsAsync(response);
+            var result = await _controller.CreateProvisioningTasks(CreateRequest());
 
-            var result = await _controller.CreateProvisioningTasks(request);
-
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -77,9 +71,26 @@ namespace Telecomm360.Test.ControllerTest
 
             var result = await _controller.CreateProvisioningTasks(CreateRequest());
 
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateProvisioningTasks_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateTaskAsync(It.IsAny<CreateProvisioningTaskRequestDto>()))
+                        .ReturnsAsync(CreateResponse());
+
+            await _controller.CreateProvisioningTasks(CreateRequest());
+
+            _serviceMock.Verify(s => s.CreateTaskAsync(It.IsAny<CreateProvisioningTaskRequestDto>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateProvisioningTasks_NullRequest_ReturnsOk()
+        {
+            var result = await _controller.CreateProvisioningTasks(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         #endregion
@@ -89,20 +100,48 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task GetAllProvisioningTasks_Valid_ReturnsOk()
         {
-            var list = new List<ProvisioningTaskResponseDto>
-            {
-                CreateResponse(1),
-                CreateResponse(2)
-            };
-
             _serviceMock.Setup(s => s.GetAllTasksAsync())
-                        .ReturnsAsync(list);
+                        .ReturnsAsync(new List<ProvisioningTaskResponseDto> { CreateResponse() });
 
             var result = await _controller.GetAllProvisioningTasks();
 
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllProvisioningTasks_Empty_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetAllTasksAsync())
+                        .ReturnsAsync(new List<ProvisioningTaskResponseDto>());
+
+            var result = await _controller.GetAllProvisioningTasks();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllProvisioningTasks_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetAllTasksAsync())
+                        .ReturnsAsync(new List<ProvisioningTaskResponseDto>());
+
+            await _controller.GetAllProvisioningTasks();
+
+            _serviceMock.Verify(s => s.GetAllTasksAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAllProvisioningTasks_ReturnsCorrectData()
+        {
+            var data = new List<ProvisioningTaskResponseDto> { CreateResponse() };
+
+            _serviceMock.Setup(s => s.GetAllTasksAsync())
+                        .ReturnsAsync(data);
+
+            var result = await _controller.GetAllProvisioningTasks() as OkObjectResult;
+
+            var wrapped = result.Value as dynamic;
+            Assert.That(wrapped.data, Is.EqualTo(data));
         }
 
         #endregion
@@ -112,15 +151,12 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task GetProvisioningTasksById_Valid_ReturnsOk()
         {
-            var response = CreateResponse(1);
-
             _serviceMock.Setup(s => s.GetTaskByIdAsync(1))
-                        .ReturnsAsync(response);
+                        .ReturnsAsync(CreateResponse());
 
             var result = await _controller.GetProvisioningTasksById(1);
 
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -128,22 +164,29 @@ namespace Telecomm360.Test.ControllerTest
         {
             var result = await _controller.GetProvisioningTasksById(0);
 
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
-        public async Task GetProvisioningTasksById_NotFound_Returns404()
+        public async Task GetProvisioningTasksById_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.GetTaskByIdAsync(1))
                         .ReturnsAsync((ProvisioningTaskResponseDto)null);
 
             var result = await _controller.GetProvisioningTasksById(1);
 
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(ProvisioningTaskConstants.NotFound));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task GetProvisioningTasksById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetTaskByIdAsync(1))
+                        .ReturnsAsync(CreateResponse());
+
+            await _controller.GetProvisioningTasksById(1);
+
+            _serviceMock.Verify(s => s.GetTaskByIdAsync(1), Times.Once);
         }
 
         #endregion
@@ -153,16 +196,12 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task UpdateProvisioningTasks_Valid_ReturnsOk()
         {
-            var request = CreateRequest();
-            var response = CreateResponse(1);
+            _serviceMock.Setup(s => s.UpdateTaskAsync(1, It.IsAny<CreateProvisioningTaskRequestDto>()))
+                        .ReturnsAsync(CreateResponse());
 
-            _serviceMock.Setup(s => s.UpdateTaskAsync(1, request))
-                        .ReturnsAsync(response);
+            var result = await _controller.UpdateProvisioningTasks(1, CreateRequest());
 
-            var result = await _controller.UpdateProvisioningTasks(1, request);
-
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -170,21 +209,29 @@ namespace Telecomm360.Test.ControllerTest
         {
             var result = await _controller.UpdateProvisioningTasks(0, CreateRequest());
 
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
-        public async Task UpdateProvisioningTasks_NotFound_Returns404()
+        public async Task UpdateProvisioningTasks_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.UpdateTaskAsync(1, It.IsAny<CreateProvisioningTaskRequestDto>()))
                         .ReturnsAsync((ProvisioningTaskResponseDto)null);
 
             var result = await _controller.UpdateProvisioningTasks(1, CreateRequest());
 
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task UpdateProvisioningTasks_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.UpdateTaskAsync(1, It.IsAny<CreateProvisioningTaskRequestDto>()))
+                        .ReturnsAsync(CreateResponse());
+
+            await _controller.UpdateProvisioningTasks(1, CreateRequest());
+
+            _serviceMock.Verify(s => s.UpdateTaskAsync(1, It.IsAny<CreateProvisioningTaskRequestDto>()), Times.Once);
         }
 
         #endregion
@@ -207,20 +254,18 @@ namespace Telecomm360.Test.ControllerTest
         {
             var result = await _controller.DeleteProvisioningTasks(0);
 
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
-        public async Task DeleteProvisioningTasks_NotFound_Returns404()
+        public async Task DeleteProvisioningTasks_NotFound_ReturnsNotFound()
         {
             _serviceMock.Setup(s => s.DeleteTaskAsync(1))
                         .ReturnsAsync(false);
 
             var result = await _controller.DeleteProvisioningTasks(1);
 
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
         #endregion

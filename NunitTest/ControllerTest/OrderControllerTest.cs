@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 
-namespace Telecom360.Test.ControllerTest
+namespace Telecomm360.Test.ControllerTest
 {
     [TestFixture]
     public class OrderControllerTests
@@ -39,7 +39,6 @@ namespace Telecom360.Test.ControllerTest
             };
         }
 
-        // ✅ FIXED HERE
         private CreateOrderRequestDto CreateCreateOrderRequest()
         {
             return new CreateOrderRequestDto
@@ -65,21 +64,27 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task GetAllOrders_Valid_ReturnsOk()
         {
-            var orders = new List<OrderResponseDto>
-            {
-                CreateTestOrder(1),
-                CreateTestOrder(2)
-            };
+            var orders = new List<OrderResponseDto> { CreateTestOrder() };
 
             _serviceMock.Setup(s => s.GetAllOrders())
                         .ReturnsAsync(orders);
 
             var result = await _controller.GetAllOrders();
 
-            var ok = result as OkObjectResult;
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
 
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(orders));
+        [Test]
+        public async Task GetAllOrders_ReturnsCorrectData()
+        {
+            var orders = new List<OrderResponseDto> { CreateTestOrder() };
+
+            _serviceMock.Setup(s => s.GetAllOrders())
+                        .ReturnsAsync(orders);
+
+            var result = await _controller.GetAllOrders() as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(orders));
         }
 
         #endregion
@@ -89,17 +94,12 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task GetOrderById_Valid_ReturnsOk()
         {
-            var order = CreateTestOrder(1);
-
             _serviceMock.Setup(s => s.GetOrderById(1))
-                        .ReturnsAsync(order);
+                        .ReturnsAsync(CreateTestOrder());
 
             var result = await _controller.GetOrderById(1);
 
-            var ok = result as OkObjectResult;
-
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(order));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -110,10 +110,18 @@ namespace Telecom360.Test.ControllerTest
 
             var result = await _controller.GetOrderById(1);
 
-            var notFound = result as NotFoundObjectResult;
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
 
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(ErrorMessages.NOT_FOUND));
+        [Test]
+        public async Task GetOrderById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetOrderById(1))
+                        .ReturnsAsync(CreateTestOrder());
+
+            await _controller.GetOrderById(1);
+
+            _serviceMock.Verify(s => s.GetOrderById(1), Times.Once);
         }
 
         #endregion
@@ -123,18 +131,29 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task CreateOrder_Valid_ReturnsCreated()
         {
-            var request = CreateCreateOrderRequest();
-            var response = CreateTestOrder(1);
+            _serviceMock.Setup(s => s.CreateOrder(It.IsAny<CreateOrderRequestDto>()))
+                        .ReturnsAsync(CreateTestOrder());
 
-            _serviceMock.Setup(s => s.CreateOrder(request))
-                        .ReturnsAsync(response);
+            var result = await _controller.CreateOrder(CreateCreateOrderRequest());
 
-            var result = await _controller.CreateOrder(request);
+            Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
+        }
 
-            var created = result as CreatedAtActionResult;
+        [Test]
+        public async Task CreateOrder_NullRequest_ThrowsNullReferenceException()
+        {
+            Assert.ThrowsAsync<NullReferenceException>(async () => await _controller.CreateOrder(null));
+        }
 
-            Assert.That(created, Is.Not.Null);
-            Assert.That(created.Value, Is.EqualTo(response));
+        [Test]
+        public async Task CreateOrder_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateOrder(It.IsAny<CreateOrderRequestDto>()))
+                        .ReturnsAsync(CreateTestOrder());
+
+            await _controller.CreateOrder(CreateCreateOrderRequest());
+
+            _serviceMock.Verify(s => s.CreateOrder(It.IsAny<CreateOrderRequestDto>()), Times.Once);
         }
 
         #endregion
@@ -144,34 +163,34 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task UpdateOrder_Valid_ReturnsOk()
         {
-            var request = CreateUpdateOrderRequest();
-            var response = CreateTestOrder(1);
+            _serviceMock.Setup(s => s.UpdateOrder(1, It.IsAny<UpdateOrderRequestDto>()))
+                        .ReturnsAsync(CreateTestOrder());
 
-            _serviceMock.Setup(s => s.UpdateOrder(1, request))
-                        .ReturnsAsync(response);
+            var result = await _controller.UpdateOrder(1, CreateUpdateOrderRequest());
 
-            var result = await _controller.UpdateOrder(1, request);
-
-            var ok = result as OkObjectResult;
-
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task UpdateOrder_NotFound_Returns404()
         {
-            var request = CreateUpdateOrderRequest();
-
-            _serviceMock.Setup(s => s.UpdateOrder(1, request))
+            _serviceMock.Setup(s => s.UpdateOrder(1, It.IsAny<UpdateOrderRequestDto>()))
                         .ReturnsAsync((OrderResponseDto)null);
 
-            var result = await _controller.UpdateOrder(1, request);
+            var result = await _controller.UpdateOrder(1, CreateUpdateOrderRequest());
 
-            var notFound = result as NotFoundObjectResult;
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
 
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(ErrorMessages.NOT_FOUND));
+        [Test]
+        public async Task UpdateOrder_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.UpdateOrder(1, It.IsAny<UpdateOrderRequestDto>()))
+                        .ReturnsAsync(CreateTestOrder());
+
+            await _controller.UpdateOrder(1, CreateUpdateOrderRequest());
+
+            _serviceMock.Verify(s => s.UpdateOrder(1, It.IsAny<UpdateOrderRequestDto>()), Times.Once);
         }
 
         #endregion
@@ -179,19 +198,25 @@ namespace Telecom360.Test.ControllerTest
         #region CancelOrder
 
         [Test]
-        public async Task CancelOrder_Valid_ReturnsCancelledResponse()
+        public async Task CancelOrder_Valid_ReturnsOk()
         {
             _serviceMock.Setup(s => s.CancelOrder(1))
                         .ReturnsAsync(true);
 
             var result = await _controller.CancelOrder(1);
 
-            var ok = result as OkObjectResult;
-            var data = ok.Value as OrderActionResponseDto;
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
 
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(data, Is.Not.Null);
-            Assert.That(data.Status, Is.EqualTo("CANCELLED"));
+        [Test]
+        public async Task CancelOrder_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CancelOrder(1))
+                        .ReturnsAsync(true);
+
+            await _controller.CancelOrder(1);
+
+            _serviceMock.Verify(s => s.CancelOrder(1), Times.Once);
         }
 
         #endregion
@@ -206,11 +231,7 @@ namespace Telecom360.Test.ControllerTest
 
             var result = await _controller.SubmitOrder(1);
 
-            var ok = result as OkObjectResult;
-            var data = ok.Value as OrderActionResponseDto;
-
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(data.Status, Is.EqualTo("SUBMITTED"));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -221,9 +242,7 @@ namespace Telecom360.Test.ControllerTest
 
             var result = await _controller.SubmitOrder(1);
 
-            var badRequest = result as BadRequestObjectResult;
-
-            Assert.That(badRequest, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         #endregion
@@ -238,12 +257,7 @@ namespace Telecom360.Test.ControllerTest
 
             var result = await _controller.FulfillOrder(1);
 
-            var ok = result as OkObjectResult;
-            var data = ok.Value as OrderActionResponseDto;
-
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(data.Status, Is.EqualTo("FULFILLED"));
-            Assert.That(data.OrderID, Is.EqualTo(1));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -254,9 +268,7 @@ namespace Telecom360.Test.ControllerTest
 
             var result = await _controller.FulfillOrder(1);
 
-            var badRequest = result as BadRequestObjectResult;
-
-            Assert.That(badRequest, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         #endregion

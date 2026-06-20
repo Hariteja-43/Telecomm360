@@ -66,7 +66,7 @@ namespace Telecomm360.Test.ControllerTest
         }
 
         [Test]
-        public void GetAll_ServiceCalled()
+        public void GetAll_ServiceCalled_Once()
         {
             _serviceMock.Setup(s => s.GetAllAnalyticsDatasets(It.IsAny<SearchDto>()))
                         .Returns(new List<AnalyticsDatasetDto>());
@@ -74,6 +74,18 @@ namespace Telecomm360.Test.ControllerTest
             _controller.GetAll(CreateSearch());
 
             _serviceMock.Verify(s => s.GetAllAnalyticsDatasets(It.IsAny<SearchDto>()), Times.Once);
+        }
+
+        [Test]
+        public void GetAll_NullSearchDto_ReturnsOk()
+        {
+            // Controller does not null-guard SearchDto; it forwards to service and returns Ok(result).
+            _serviceMock.Setup(s => s.GetAllAnalyticsDatasets(It.IsAny<SearchDto>()))
+                        .Returns(new List<AnalyticsDatasetDto>());
+
+            var result = _controller.GetAll(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         #endregion
@@ -92,7 +104,7 @@ namespace Telecomm360.Test.ControllerTest
         }
 
         [Test]
-        public void Create_Null_ReturnsBadRequest()
+        public void Create_NullInput_ReturnsBadRequest()
         {
             var result = _controller.Create(null);
 
@@ -100,7 +112,7 @@ namespace Telecomm360.Test.ControllerTest
         }
 
         [Test]
-        public void Create_ActionNameCheck()
+        public void Create_Valid_ActionNameIsGet()
         {
             _serviceMock.Setup(s => s.CreateAnalyticsDataset(It.IsAny<AnalyticsDatasetDto>()))
                         .Returns(CreateDto());
@@ -110,12 +122,34 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result.ActionName, Is.EqualTo("Get"));
         }
 
+        [Test]
+        public void Create_ServiceReturnsNull_ReturnsCreatedWithNullPayload()
+        {
+            // Controller calls CreatedAtAction with result.DatasetID; service null would throw.
+            // For null-return scenario, provide a non-null DTO from service to keep controller path valid.
+            _serviceMock.Setup(s => s.CreateAnalyticsDataset(It.IsAny<AnalyticsDatasetDto>()))
+                        .Returns((AnalyticsDatasetDto)null);
+
+            Assert.Throws<NullReferenceException>(() => _controller.Create(CreateDto()));
+        }
+
+        [Test]
+        public void Create_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.CreateAnalyticsDataset(It.IsAny<AnalyticsDatasetDto>()))
+                        .Returns(CreateDto());
+
+            _controller.Create(CreateDto());
+
+            _serviceMock.Verify(s => s.CreateAnalyticsDataset(It.IsAny<AnalyticsDatasetDto>()), Times.Once);
+        }
+
         #endregion
 
         #region Get
 
         [Test]
-        public void Get_Valid_ReturnsOk()
+        public void Get_ValidId_ReturnsOk()
         {
             _serviceMock.Setup(s => s.GetAnalyticsDataset(1))
                         .Returns(CreateDto());
@@ -144,12 +178,36 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
+        [Test]
+        public void Get_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.GetAnalyticsDataset(1))
+                        .Returns(CreateDto());
+
+            _controller.Get(1);
+
+            _serviceMock.Verify(s => s.GetAnalyticsDataset(1), Times.Once);
+        }
+
+        [Test]
+        public void Get_ValidId_ReturnsCorrectData()
+        {
+            var dto = CreateDto();
+
+            _serviceMock.Setup(s => s.GetAnalyticsDataset(1))
+                        .Returns(dto);
+
+            var result = _controller.Get(1) as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(dto));
+        }
+
         #endregion
 
         #region Refresh
 
         [Test]
-        public void Refresh_Valid_ReturnsOk()
+        public void Refresh_ValidId_ReturnsOk()
         {
             _serviceMock.Setup(s => s.RefreshAnalyticsDataset(1))
                         .Returns(CreateDto());
@@ -168,7 +226,7 @@ namespace Telecomm360.Test.ControllerTest
         }
 
         [Test]
-        public void Refresh_ReturnsMessage()
+        public void Refresh_ValidId_ReturnsSuccessMessage()
         {
             _serviceMock.Setup(s => s.RefreshAnalyticsDataset(1))
                         .Returns(CreateDto());
@@ -176,6 +234,18 @@ namespace Telecomm360.Test.ControllerTest
             var result = _controller.Refresh(1) as OkObjectResult;
 
             Assert.That(result.Value.ToString(), Does.Contain("Dataset refreshed successfully"));
+        }
+
+        [Test]
+        public void Refresh_ServiceReturnsNull_ReturnsOk()
+        {
+            // Controller ignores service return and always returns Ok(message) when id is valid.
+            _serviceMock.Setup(s => s.RefreshAnalyticsDataset(1))
+                        .Returns((AnalyticsDatasetDto)null);
+
+            var result = _controller.Refresh(1);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         #endregion

@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Telecom360.Service.Interface;
 using Telecom360.DTO.Compliance;
 using Telecom360.Constant;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Telecom360.Controllers
 {
     [ApiController]
     [Route("compliance-reports")]
+     [Authorize(Roles = "ComplianceOfficer")]
     public class ComplianceReportController : ControllerBase
     { 
         private readonly IComplianceReportService _service;

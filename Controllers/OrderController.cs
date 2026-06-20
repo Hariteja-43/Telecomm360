@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Telecom360.Service.Interface;
 using Telecom360.DTO.Order;
 using Telecom360.Constant;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Telecom360.Controllers
 {
     [ApiController]
     [Route("orders")]
+     [Authorize(Roles = "ProductManager")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _service;

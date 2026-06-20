@@ -23,12 +23,9 @@ namespace Telecomm360.Test.ControllerTest
             _controller = new KPIReportController(_serviceMock.Object);
         }
 
-        // Helper methods
+        #region Helpers
 
-        private SearchDto CreateSearch()
-        {
-            return new SearchDto();
-        }
+        private SearchDto CreateSearch() => new SearchDto();
 
         private KPIReportDto CreateDto(int KPIReportId = 1)
         {
@@ -40,6 +37,8 @@ namespace Telecomm360.Test.ControllerTest
                 Scope = "GLOBAL"
             };
         }
+
+        #endregion
 
         #region GetAll
 
@@ -76,6 +75,19 @@ namespace Telecomm360.Test.ControllerTest
             _serviceMock.Verify(s => s.GetAllKPIReport(It.IsAny<SearchDto>()), Times.Once);
         }
 
+        [Test]
+        public void GetAll_ReturnsCorrectData()
+        {
+            var data = new List<KPIReportDto> { CreateDto() };
+
+            _serviceMock.Setup(s => s.GetAllKPIReport(It.IsAny<SearchDto>()))
+                        .Returns(data);
+
+            var result = _controller.GetAll(CreateSearch()) as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(data));
+        }
+
         #endregion
 
         #region GetKPIReportById
@@ -108,6 +120,17 @@ namespace Telecomm360.Test.ControllerTest
             var result = _controller.GetKPIReportById(1);
 
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public void GetById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetKPIReportById(1))
+                        .Returns(CreateDto());
+
+            _controller.GetKPIReportById(1);
+
+            _serviceMock.Verify(s => s.GetKPIReportById(1), Times.Once);
         }
 
         #endregion
@@ -144,6 +167,19 @@ namespace Telecomm360.Test.ControllerTest
             _serviceMock.Verify(s => s.GetKPIReportByScope(It.IsAny<string>()), Times.Once);
         }
 
+        [Test]
+        public void GetByScope_ReturnsCorrectData()
+        {
+            var data = new List<KPIReportDto> { CreateDto() };
+
+            _serviceMock.Setup(s => s.GetKPIReportByScope(It.IsAny<string>()))
+                        .Returns(data);
+
+            var result = _controller.GetKPIReportByScope("GLOBAL") as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(data));
+        }
+
         #endregion
 
         #region Create
@@ -176,6 +212,17 @@ namespace Telecomm360.Test.ControllerTest
             var result = _controller.Create(CreateDto()) as CreatedAtActionResult;
 
             Assert.That(result.ActionName, Is.EqualTo("GetKPIReportById"));
+        }
+
+        [Test]
+        public void Create_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateKPIReport(It.IsAny<KPIReportDto>()))
+                        .Returns(CreateDto());
+
+            _controller.Create(CreateDto());
+
+            _serviceMock.Verify(s => s.CreateKPIReport(It.IsAny<KPIReportDto>()), Times.Once);
         }
 
         #endregion

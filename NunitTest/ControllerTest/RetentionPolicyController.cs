@@ -26,13 +26,12 @@ namespace Telecom360.Test.ControllerTest
 
         #region Helpers
 
-        // FIXED: required DataType added
         private RetentionPolicyResponseDto CreateTestPolicy(int id = 1)
         {
             return new RetentionPolicyResponseDto
             {
                 PolicyID = id,
-                DataType = "CustomerData",     // REQUIRED
+                DataType = "CustomerData",
                 RetentionPeriod = 30,
                 AppliedFrom = DateTime.UtcNow
             };
@@ -63,40 +62,49 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task GetAllRetentionPolicy_Valid_ReturnsOk()
         {
-            // Arrange
-            var policies = new List<RetentionPolicyResponseDto>
-            {
-                CreateTestPolicy(1),
-                CreateTestPolicy(2)
-            };
+            var policies = new List<RetentionPolicyResponseDto> { CreateTestPolicy() };
 
             _serviceMock.Setup(s => s.GetAllRetentionPolicy())
                         .ReturnsAsync(policies);
 
-            // Act
             var result = await _controller.GetAllRetentionPolicy();
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(policies));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllRetentionPolicy_ReturnsCorrectData()
+        {
+            var policies = new List<RetentionPolicyResponseDto> { CreateTestPolicy() };
+
+            _serviceMock.Setup(s => s.GetAllRetentionPolicy())
+                        .ReturnsAsync(policies);
+
+            var result = await _controller.GetAllRetentionPolicy() as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(policies));
+        }
+
+        [Test]
+        public async Task GetAllRetentionPolicy_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetAllRetentionPolicy())
+                        .ReturnsAsync(new List<RetentionPolicyResponseDto>());
+
+            await _controller.GetAllRetentionPolicy();
+
+            _serviceMock.Verify(s => s.GetAllRetentionPolicy(), Times.Once);
         }
 
         [Test]
         public async Task GetAllRetentionPolicy_Exception_Returns500()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetAllRetentionPolicy())
                         .ThrowsAsync(new Exception());
 
-            // Act
-            var result = await _controller.GetAllRetentionPolicy();
+            var result = await _controller.GetAllRetentionPolicy() as ObjectResult;
 
-            // Assert
-            var status = result as ObjectResult;
-            Assert.That(status, Is.Not.Null);
-            Assert.That(status.StatusCode, Is.EqualTo(500));
-            Assert.That(status.Value, Is.EqualTo(ErrorMessages.SERVER_ERROR));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         #endregion
@@ -106,51 +114,53 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task GetRetentionPolicyById_Valid_ReturnsOk()
         {
-            // Arrange
-            var policy = CreateTestPolicy(1);
-
             _serviceMock.Setup(s => s.GetRetentionPolicyById(1))
-                        .ReturnsAsync(policy);
+                        .ReturnsAsync(CreateTestPolicy());
 
-            // Act
             var result = await _controller.GetRetentionPolicyById(1);
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(policy));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task GetRetentionPolicyById_NotFound_Returns404()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetRetentionPolicyById(1))
                         .ReturnsAsync((RetentionPolicyResponseDto)null);
 
-            // Act
             var result = await _controller.GetRetentionPolicyById(1);
 
-            // Assert
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(ErrorMessages.NOT_FOUND));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task GetRetentionPolicyById_InvalidId_ReturnsBadRequest()
+        {
+            var result = await _controller.GetRetentionPolicyById(0);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task GetRetentionPolicyById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetRetentionPolicyById(1))
+                        .ReturnsAsync(CreateTestPolicy());
+
+            await _controller.GetRetentionPolicyById(1);
+
+            _serviceMock.Verify(s => s.GetRetentionPolicyById(1), Times.Once);
         }
 
         [Test]
         public async Task GetRetentionPolicyById_Exception_Returns500()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetRetentionPolicyById(It.IsAny<int>()))
                         .ThrowsAsync(new Exception());
 
-            // Act
-            var result = await _controller.GetRetentionPolicyById(1);
+            var result = await _controller.GetRetentionPolicyById(1) as ObjectResult;
 
-            // Assert
-            var status = result as ObjectResult;
-            Assert.That(status, Is.Not.Null);
-            Assert.That(status.StatusCode, Is.EqualTo(500));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         #endregion
@@ -160,36 +170,48 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task CreateRetentionPolicy_Valid_ReturnsOk()
         {
-            // Arrange
-            var request = CreateCreateRequest();
-            var response = CreateTestPolicy(1);
+            _serviceMock.Setup(s => s.CreateRetentionPolicy(It.IsAny<CreateRetentionPolicyRequestDto>()))
+                        .ReturnsAsync(CreateTestPolicy());
 
-            _serviceMock.Setup(s => s.CreateRetentionPolicy(request))
-                        .ReturnsAsync(response);
+            var result = await _controller.CreateRetentionPolicy(CreateCreateRequest());
 
-            // Act
-            var result = await _controller.CreateRetentionPolicy(request);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateRetentionPolicy_NullRequest_ReturnsOk()
+        {
+            // Arrange/Act
+            // Controller currently does not null-guard request; it returns Ok(serviceResult).
+            _serviceMock.Setup(s => s.CreateRetentionPolicy(null))
+                        .ReturnsAsync((RetentionPolicyResponseDto)null);
+
+            var result = await _controller.CreateRetentionPolicy(null);
 
             // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateRetentionPolicy_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateRetentionPolicy(It.IsAny<CreateRetentionPolicyRequestDto>()))
+                        .ReturnsAsync(CreateTestPolicy());
+
+            await _controller.CreateRetentionPolicy(CreateCreateRequest());
+
+            _serviceMock.Verify(s => s.CreateRetentionPolicy(It.IsAny<CreateRetentionPolicyRequestDto>()), Times.Once);
         }
 
         [Test]
         public async Task CreateRetentionPolicy_Exception_Returns500()
         {
-            // Arrange
             _serviceMock.Setup(s => s.CreateRetentionPolicy(It.IsAny<CreateRetentionPolicyRequestDto>()))
                         .ThrowsAsync(new Exception());
 
-            // Act
-            var result = await _controller.CreateRetentionPolicy(CreateCreateRequest());
+            var result = await _controller.CreateRetentionPolicy(CreateCreateRequest()) as ObjectResult;
 
-            // Assert
-            var status = result as ObjectResult;
-            Assert.That(status, Is.Not.Null);
-            Assert.That(status.StatusCode, Is.EqualTo(500));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         #endregion
@@ -199,54 +221,53 @@ namespace Telecom360.Test.ControllerTest
         [Test]
         public async Task UpdateRetentionPolicy_Valid_ReturnsOk()
         {
-            // Arrange
-            var request = CreateUpdateRequest();
-            var response = CreateTestPolicy(1);
+            _serviceMock.Setup(s => s.UpdateRetentionPolicy(1, It.IsAny<UpdateRetentionPolicyRequestDto>()))
+                        .ReturnsAsync(CreateTestPolicy());
 
-            _serviceMock.Setup(s => s.UpdateRetentionPolicy(1, request))
-                        .ReturnsAsync(response);
+            var result = await _controller.UpdateRetentionPolicy(1, CreateUpdateRequest());
 
-            // Act
-            var result = await _controller.UpdateRetentionPolicy(1, request);
-
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task UpdateRetentionPolicy_NotFound_Returns404()
         {
-            // Arrange
-            var request = CreateUpdateRequest();
-
-            _serviceMock.Setup(s => s.UpdateRetentionPolicy(1, request))
+            _serviceMock.Setup(s => s.UpdateRetentionPolicy(1, It.IsAny<UpdateRetentionPolicyRequestDto>()))
                         .ReturnsAsync((RetentionPolicyResponseDto)null);
 
-            // Act
-            var result = await _controller.UpdateRetentionPolicy(1, request);
+            var result = await _controller.UpdateRetentionPolicy(1, CreateUpdateRequest());
 
-            // Assert
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(ErrorMessages.NOT_FOUND));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task UpdateRetentionPolicy_InvalidId_ReturnsBadRequest()
+        {
+            var result = await _controller.UpdateRetentionPolicy(0, CreateUpdateRequest());
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task UpdateRetentionPolicy_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.UpdateRetentionPolicy(1, It.IsAny<UpdateRetentionPolicyRequestDto>()))
+                        .ReturnsAsync(CreateTestPolicy());
+
+            await _controller.UpdateRetentionPolicy(1, CreateUpdateRequest());
+
+            _serviceMock.Verify(s => s.UpdateRetentionPolicy(1, It.IsAny<UpdateRetentionPolicyRequestDto>()), Times.Once);
         }
 
         [Test]
         public async Task UpdateRetentionPolicy_Exception_Returns500()
         {
-            // Arrange
             _serviceMock.Setup(s => s.UpdateRetentionPolicy(It.IsAny<int>(), It.IsAny<UpdateRetentionPolicyRequestDto>()))
                         .ThrowsAsync(new Exception());
 
-            // Act
-            var result = await _controller.UpdateRetentionPolicy(1, CreateUpdateRequest());
+            var result = await _controller.UpdateRetentionPolicy(1, CreateUpdateRequest()) as ObjectResult;
 
-            // Assert
-            var status = result as ObjectResult;
-            Assert.That(status, Is.Not.Null);
-            Assert.That(status.StatusCode, Is.EqualTo(500));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         #endregion

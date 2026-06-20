@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Telecomm360.DTOs;
 using Telecomm360.Service.Interface;
@@ -6,6 +7,7 @@ namespace Telecomm360.Controllers;
 
 [ApiController]
 [Route("api/usage")]
+[Authorize(Roles = "BillingSpecialist")]
 public class UsageRecordController : ControllerBase
 {
     private readonly IUsageRecordService _usageRecordService;

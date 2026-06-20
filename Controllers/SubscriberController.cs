@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Telecomm360.DTO;
 using Telecomm360.Service.Interface;
 using Telecomm360.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Telecomm360.Controllers
 {
     [ApiController]
     [Route("api/subscribers")]
+    [Authorize(Roles = "CustomerServiceAgent")]
     public class SubscribersController : ControllerBase
     {
         private readonly ISubscriberService _service;

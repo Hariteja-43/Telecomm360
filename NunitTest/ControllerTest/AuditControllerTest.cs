@@ -24,12 +24,9 @@ namespace Telecomm360.Test.ControllerTest
             _controller = new AuditController(_serviceMock.Object);
         }
 
-        // helpers
+        #region Helpers
 
-        private AuditLogSearchDto CreateSearch()
-        {
-            return new AuditLogSearchDto();
-        }
+        private AuditLogSearchDto CreateSearch() => new AuditLogSearchDto();
 
         private AuditLogCreateRequest CreateRequest()
         {
@@ -53,19 +50,32 @@ namespace Telecomm360.Test.ControllerTest
             };
         }
 
+        #endregion
+
         #region GetAuditLogs
 
         [Test]
         public async Task GetAuditLogs_Valid_ReturnsOk()
         {
-            var list = new List<AuditLogResponse> { CreateResponse() };
-
             _serviceMock.Setup(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()))
-                        .ReturnsAsync(list);
+                        .ReturnsAsync(new List<AuditLogResponse> { CreateResponse() });
 
             var result = await _controller.GetAuditLogs(CreateSearch());
 
             Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAuditLogs_Valid_ReturnsCorrectData()
+        {
+            var data = new List<AuditLogResponse> { CreateResponse() };
+
+            _serviceMock.Setup(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()))
+                        .ReturnsAsync(data);
+
+            var result = await _controller.GetAuditLogs(CreateSearch()) as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(data));
         }
 
         [Test]
@@ -87,6 +97,28 @@ namespace Telecomm360.Test.ControllerTest
             var result = await _controller.GetAuditLogs(CreateSearch());
 
             Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAuditLogs_ServiceReturnsNull_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()))
+                        .ReturnsAsync((List<AuditLogResponse>)null);
+
+            var result = await _controller.GetAuditLogs(CreateSearch());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAuditLogs_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()))
+                        .ReturnsAsync(new List<AuditLogResponse>());
+
+            await _controller.GetAuditLogs(CreateSearch());
+
+            _serviceMock.Verify(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()), Times.Once);
         }
 
         #endregion
@@ -115,7 +147,7 @@ namespace Telecomm360.Test.ControllerTest
         }
 
         [Test]
-        public async Task CreateAuditLog_ServiceCalledOnce()
+        public async Task CreateAuditLog_ServiceCalled_Once()
         {
             _serviceMock.Setup(s => s.CreateAuditLogAsync(It.IsAny<AuditLogCreateRequest>()))
                         .Returns(Task.CompletedTask);
@@ -123,6 +155,61 @@ namespace Telecomm360.Test.ControllerTest
             await _controller.CreateAuditLog(CreateRequest());
 
             _serviceMock.Verify(s => s.CreateAuditLogAsync(It.IsAny<AuditLogCreateRequest>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateAuditLog_NullRequest_ReturnsOk()
+        {
+            // Controller does not null-guard request; it returns Ok when ModelState is valid.
+            var result = await _controller.CreateAuditLog(null);
+
+            Assert.That(result, Is.TypeOf<OkResult>());
+        }
+
+        [Test]
+        public async Task CreateAuditLog_ServiceThrowsException()
+        {
+            _serviceMock.Setup(s => s.CreateAuditLogAsync(It.IsAny<AuditLogCreateRequest>()))
+                        .ThrowsAsync(new Exception());
+
+            Assert.ThrowsAsync<Exception>(async () => await _controller.CreateAuditLog(CreateRequest()));
+        }
+
+        #endregion
+
+        #region AdditionalCoverage
+
+        [Test]
+        public async Task GetAuditLogs_NullSearch_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()))
+                        .ReturnsAsync(new List<AuditLogResponse>());
+
+            var result = await _controller.GetAuditLogs(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAuditLogs_ResponseNotNull()
+        {
+            _serviceMock.Setup(s => s.GetAuditLogsAsync(It.IsAny<AuditLogSearchDto>()))
+                        .ReturnsAsync(new List<AuditLogResponse> { CreateResponse() });
+
+            var result = await _controller.GetAuditLogs(CreateSearch()) as OkObjectResult;
+
+            Assert.That(result.Value, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task CreateAuditLog_ResponseTypeCheck()
+        {
+            _serviceMock.Setup(s => s.CreateAuditLogAsync(It.IsAny<AuditLogCreateRequest>()))
+                        .Returns(Task.CompletedTask);
+
+            var result = await _controller.CreateAuditLog(CreateRequest());
+
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
 
         #endregion

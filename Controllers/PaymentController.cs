@@ -4,11 +4,13 @@ using Telecomm360.DTOs;
 using Telecomm360.Service.Interfaces;
 using Telecomm360.Constants;
 using Telecomm360.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Telecomm360.Controllers;
 
 [ApiController]
 [Route("api/payments")]
+[Authorize(Roles = "BillingSpecialist")]
 public class PaymentController : ControllerBase
 {
     private readonly IPaymentService _service;

@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Telecom360.Service.Interface;
 using Telecom360.DTO.Retention;
 using Telecom360.Constant;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Telecom360.Controllers
 {
     [ApiController]
     [Route("retention-policies")]
+    [Authorize(Roles = "ComplianceOfficer")]
     public class RetentionPolicyController : ControllerBase
     {
         private readonly IRetentionPolicyService _service;

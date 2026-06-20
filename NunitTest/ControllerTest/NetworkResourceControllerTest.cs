@@ -1,8 +1,8 @@
 using NUnit.Framework;
 using Moq;
 using Telecomm360.Controllers;
-using Telecomm360.DTO;
 using Telecomm360.Service.Interface;
+using Telecomm360.DTO;
 using Telecomm360.Constants;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Telecomm360.Test.ControllerTest
                 NetworkResourceType = "SIM",
                 Location = "Chennai",
                 Capacity = 100,
-                Status = Status.Active   // Make sure enum exists
+                Status = Status.Active
             };
         }
 
@@ -51,20 +51,17 @@ namespace Telecomm360.Test.ControllerTest
 
         #endregion
 
-        #region CreateNetworkResource (3 Tests)
+        #region CreateNetworkResource
 
         [Test]
         public async Task CreateNetworkResource_Valid_ReturnsOk()
         {
-            var response = CreateResponse();
-
             _serviceMock.Setup(s => s.CreateResourceAsync(It.IsAny<CreateNetworkResourceRequestDto>()))
-                        .ReturnsAsync(response);
+                        .ReturnsAsync(CreateResponse());
 
             var result = await _controller.CreateNetworkResource(CreateRequest());
 
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
@@ -74,9 +71,7 @@ namespace Telecomm360.Test.ControllerTest
 
             var result = await _controller.CreateNetworkResource(CreateRequest());
 
-            var bad = result as BadRequestObjectResult;
-            Assert.That(bad, Is.Not.Null);
-            Assert.That(bad.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
@@ -90,21 +85,26 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
+        [Test]
+        public async Task CreateNetworkResource_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateResourceAsync(It.IsAny<CreateNetworkResourceRequestDto>()))
+                        .ReturnsAsync(CreateResponse());
+
+            await _controller.CreateNetworkResource(CreateRequest());
+
+            _serviceMock.Verify(s => s.CreateResourceAsync(It.IsAny<CreateNetworkResourceRequestDto>()), Times.Once);
+        }
+
         #endregion
 
-        #region GetAllNetworkResource (3 Tests)
+        #region GetAllNetworkResource
 
         [Test]
         public async Task GetAllNetworkResource_Valid_ReturnsOk()
         {
-            var list = new List<NetworkResourceResponseDto>
-            {
-                CreateResponse(1),
-                CreateResponse(2)
-            };
-
             _serviceMock.Setup(s => s.GetAllResourcesAsync())
-                        .ReturnsAsync(list);
+                        .ReturnsAsync(new List<NetworkResourceResponseDto> { CreateResponse() });
 
             var result = await _controller.GetAllNetworkResource();
 
@@ -133,9 +133,27 @@ namespace Telecomm360.Test.ControllerTest
             _serviceMock.Verify(s => s.GetAllResourcesAsync(), Times.Once);
         }
 
+        [Test]
+        public async Task GetAllNetworkResource_ReturnsCorrectData()
+        {
+            var list = new List<NetworkResourceResponseDto>
+            {
+                CreateResponse(1),
+                CreateResponse(2)
+            };
+
+            _serviceMock.Setup(s => s.GetAllResourcesAsync())
+                        .ReturnsAsync(list);
+
+            var result = await _controller.GetAllNetworkResource() as OkObjectResult;
+
+            var wrapped = result.Value as dynamic;
+            Assert.That(wrapped.data, Is.EqualTo(list));
+        }
+
         #endregion
 
-        #region GetNetworkResourceById (3 Tests)
+        #region GetNetworkResourceById
 
         [Test]
         public async Task GetById_Valid_ReturnsOk()
@@ -169,7 +187,7 @@ namespace Telecomm360.Test.ControllerTest
 
         #endregion
 
-        #region UpdateNetworkResourceById (3 Tests)
+        #region UpdateNetworkResourceById
 
         [Test]
         public async Task Update_Valid_ReturnsOk()
@@ -201,9 +219,20 @@ namespace Telecomm360.Test.ControllerTest
             Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
+        [Test]
+        public async Task UpdateNetworkResourceById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.UpdateResourceAsync(1, It.IsAny<CreateNetworkResourceRequestDto>()))
+                        .ReturnsAsync(CreateResponse());
+
+            await _controller.UpdateNetworkResourceById(1, CreateRequest());
+
+            _serviceMock.Verify(s => s.UpdateResourceAsync(1, It.IsAny<CreateNetworkResourceRequestDto>()), Times.Once);
+        }
+
         #endregion
 
-        #region DeleteNetworkResourceById (3 Tests)
+        #region DeleteNetworkResourceById
 
         [Test]
         public async Task Delete_Valid_ReturnsOk()

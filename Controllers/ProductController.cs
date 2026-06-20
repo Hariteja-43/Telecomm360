@@ -8,7 +8,7 @@ namespace Telecom360.Controllers
 {
     [ApiController]
     [Route("products")]
-    
+    [Authorize(Roles = "ProductManager")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _service;

@@ -16,47 +16,78 @@ namespace Telecomm360.Test.ControllerTest
             _controller = new DashboardController();
         }
 
-        #region ✅ GetDashboard (3 Tests)
+        #region GetDashboard
 
         [Test]
         public void GetDashboard_Always_ReturnsOk()
         {
-            // Act
             var result = _controller.GetDashboard();
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public void GetDashboard_ReturnsDashboardDto()
         {
-            // Act
-            var result = _controller.GetDashboard();
+            var result = _controller.GetDashboard() as OkObjectResult;
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result.Value, Is.TypeOf<DashboardDto>());
+        }
 
-            var data = ok.Value as DashboardDto;
-            Assert.That(data, Is.Not.Null);
+        [Test]
+        public void GetDashboard_Data_NotNull()
+        {
+            var result = _controller.GetDashboard() as OkObjectResult;
+
+            Assert.That(result.Value, Is.Not.Null);
         }
 
         [Test]
         public void GetDashboard_EmptyData_ReturnsZeroValues()
         {
-            // Act
-            var result = _controller.GetDashboard();
+            var result = _controller.GetDashboard() as OkObjectResult;
+            var data = result.Value as DashboardDto;
 
-            var ok = result as OkObjectResult;
-            var data = ok.Value as DashboardDto;
-
-            // Assert
             Assert.That(data.Subscribers, Is.EqualTo(0));
             Assert.That(data.ARPU, Is.EqualTo(0));
             Assert.That(data.ChurnRate, Is.EqualTo(0));
             Assert.That(data.KPIs, Does.Contain("Subscribers: 0"));
+        }
+
+        [Test]
+        public void GetDashboard_Subscribers_IsZero()
+        {
+            var result = _controller.GetDashboard() as OkObjectResult;
+            var data = result.Value as DashboardDto;
+
+            Assert.That(data.Subscribers, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void GetDashboard_ARPU_IsZero()
+        {
+            var result = _controller.GetDashboard() as OkObjectResult;
+            var data = result.Value as DashboardDto;
+
+            Assert.That(data.ARPU, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void GetDashboard_ChurnRate_IsZero()
+        {
+            var result = _controller.GetDashboard() as OkObjectResult;
+            var data = result.Value as DashboardDto;
+
+            Assert.That(data.ChurnRate, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void GetDashboard_KPIs_NotEmpty()
+        {
+            var result = _controller.GetDashboard() as OkObjectResult;
+            var data = result.Value as DashboardDto;
+
+            Assert.That(data.KPIs, Is.Not.Empty);
         }
 
         #endregion

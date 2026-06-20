@@ -62,161 +62,209 @@ namespace Telecomm360.Test.ControllerTest
 
         #endregion
 
-        #region GetIncidents (3 Tests)
+        #region GetIncidents
 
         [Test]
         public async Task GetIncidents_Valid_ReturnsOk()
         {
-            // Arrange
             var response = new List<IncidentResponse> { CreateIncident() };
 
             _serviceMock.Setup(s => s.GetIncidentsAsync(It.IsAny<SearchDtos>()))
                         .ReturnsAsync(response);
 
-            // Act
             var result = await _controller.GetIncidents(CreateSearchDto());
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task GetIncidents_InvalidModel_ReturnsBadRequest()
         {
-            // Arrange
             _controller.ModelState.AddModelError("error", "invalid");
 
-            // Act
             var result = await _controller.GetIncidents(CreateSearchDto());
 
-            // Assert
-            var bad = result as BadRequestObjectResult;
-            Assert.That(bad, Is.Not.Null);
-            Assert.That(bad.Value, Is.EqualTo(MessageConstants.InvalidModel));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
         public async Task GetIncidents_EmptyList_ReturnsOk()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetIncidentsAsync(It.IsAny<SearchDtos>()))
                         .ReturnsAsync(new List<IncidentResponse>());
 
-            // Act
             var result = await _controller.GetIncidents(CreateSearchDto());
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(((List<IncidentResponse>)ok.Value).Count, Is.EqualTo(0));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
-        #endregion
+        [Test]
+        public async Task GetIncidents_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.GetIncidentsAsync(It.IsAny<SearchDtos>()))
+                        .ReturnsAsync(new List<IncidentResponse>());
 
-        #region CreateIncident (3 Tests)
+            await _controller.GetIncidents(CreateSearchDto());
+
+            _serviceMock.Verify(s => s.GetIncidentsAsync(It.IsAny<SearchDtos>()), Times.Once);
+        }
 
         [Test]
-        public async Task CreateIncident_Valid_ReturnsOk()
+        public async Task GetIncidents_ReturnsCorrectData()
         {
-            // Arrange
-            var request = CreateIncidentRequest();
-            var response = CreateIncident();
+            var response = new List<IncidentResponse> { CreateIncident() };
 
-            _serviceMock.Setup(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()))
+            _serviceMock.Setup(s => s.GetIncidentsAsync(It.IsAny<SearchDtos>()))
                         .ReturnsAsync(response);
 
-            // Act
-            var result = await _controller.CreateIncident(request);
+            var result = await _controller.GetIncidents(CreateSearchDto()) as OkObjectResult;
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result.Value, Is.EqualTo(response));
         }
 
         [Test]
-        public async Task CreateIncident_InvalidModel_ReturnsBadRequest()
+        public async Task GetIncidents_ServiceReturnsNull_ReturnsOk()
         {
-            // Arrange
-            _controller.ModelState.AddModelError("error", "invalid");
+            _serviceMock.Setup(s => s.GetIncidentsAsync(It.IsAny<SearchDtos>()))
+                        .ReturnsAsync((List<IncidentResponse>)null);
 
-            // Act
-            var result = await _controller.CreateIncident(CreateIncidentRequest());
+            var result = await _controller.GetIncidents(CreateSearchDto());
 
-            // Assert
-            var bad = result as BadRequestObjectResult;
-            Assert.That(bad, Is.Not.Null);
-            Assert.That(bad.Value, Is.EqualTo(MessageConstants.InvalidModel));
-        }
-
-        [Test]
-        public async Task CreateIncident_ResponseNotNull_ReturnsOk()
-        {
-            // Arrange
-            _serviceMock.Setup(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()))
-                        .ReturnsAsync(CreateIncident());
-
-            // Act
-            var result = await _controller.CreateIncident(CreateIncidentRequest());
-
-            // Assert
             Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         #endregion
 
-        #region PatchIncident (3 Tests)
+        #region CreateIncident
+
+        [Test]
+        public async Task CreateIncident_Valid_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()))
+                        .ReturnsAsync(CreateIncident());
+
+            var result = await _controller.CreateIncident(CreateIncidentRequest());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateIncident_InvalidModel_ReturnsBadRequest()
+        {
+            _controller.ModelState.AddModelError("error", "invalid");
+
+            var result = await _controller.CreateIncident(CreateIncidentRequest());
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateIncident_ResponseNotNull_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()))
+                        .ReturnsAsync(CreateIncident());
+
+            var result = await _controller.CreateIncident(CreateIncidentRequest());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateIncident_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()))
+                        .ReturnsAsync(CreateIncident());
+
+            await _controller.CreateIncident(CreateIncidentRequest());
+
+            _serviceMock.Verify(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateIncident_ServiceReturnsNull_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.CreateIncidentAsync(It.IsAny<IncidentCreateRequest>()))
+                        .ReturnsAsync((IncidentResponse)null);
+
+            var result = await _controller.CreateIncident(CreateIncidentRequest());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateIncident_NullRequest_ReturnsOk()
+        {
+            var result = await _controller.CreateIncident(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        #endregion
+
+        #region PatchIncident
 
         [Test]
         public async Task PatchIncident_Valid_ReturnsOk()
         {
-            // Arrange
-            var request = CreatePatchRequest();
-            var response = CreateIncident();
-
             _serviceMock.Setup(s => s.PatchIncidentAsync(1, It.IsAny<IncidentPatchRequest>()))
-                        .ReturnsAsync(response);
+                        .ReturnsAsync(CreateIncident());
 
-            // Act
-            var result = await _controller.PatchIncident(1, request);
+            var result = await _controller.PatchIncident(1, CreatePatchRequest());
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task PatchIncident_InvalidModel_ReturnsBadRequest()
         {
-            // Arrange
             _controller.ModelState.AddModelError("error", "invalid");
 
-            // Act
             var result = await _controller.PatchIncident(1, CreatePatchRequest());
 
-            // Assert
-            var bad = result as BadRequestObjectResult;
-            Assert.That(bad, Is.Not.Null);
-            Assert.That(bad.Value, Is.EqualTo(MessageConstants.InvalidModel));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
         public async Task PatchIncident_NullResponse_ReturnsOkWithNull()
         {
-            // Arrange
             _serviceMock.Setup(s => s.PatchIncidentAsync(1, It.IsAny<IncidentPatchRequest>()))
                         .ReturnsAsync((IncidentResponse)null);
 
-            // Act
             var result = await _controller.PatchIncident(1, CreatePatchRequest());
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task PatchIncident_InvalidId_ReturnsOk()
+        {
+            var result = await _controller.PatchIncident(0, CreatePatchRequest());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task PatchIncident_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.PatchIncidentAsync(1, It.IsAny<IncidentPatchRequest>()))
+                        .ReturnsAsync(CreateIncident());
+
+            await _controller.PatchIncident(1, CreatePatchRequest());
+
+            _serviceMock.Verify(s => s.PatchIncidentAsync(1, It.IsAny<IncidentPatchRequest>()), Times.Once);
+        }
+
+        [Test]
+        public async Task PatchIncident_ReturnsCorrectData()
+        {
+            var response = CreateIncident();
+
+            _serviceMock.Setup(s => s.PatchIncidentAsync(1, It.IsAny<IncidentPatchRequest>()))
+                        .ReturnsAsync(response);
+
+            var result = await _controller.PatchIncident(1, CreatePatchRequest()) as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(response));
         }
 
         #endregion

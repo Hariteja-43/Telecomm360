@@ -546,7 +546,14 @@ cd Telecomm360.Tests
 dotnet test
 ```
 
-All 208 unit tests should pass with 0 failures.
+All controller NUnit tests should pass with 0 failures.
+
+### NUnit Test Naming & AAA Rule
+- **Naming standard**: `Method_Condition_Expectation` (e.g., `GetCaseDetailByCaseId_NoData_ReturnsNoContent()`).
+- **AAA rule** for every `[Test]` method:
+  - **Arrange**: setup mocks + inputs
+  - **Act**: call controller action
+  - **Assert**: verify HTTP result type and (when applicable) payload/content
 
 ## Key Features
 

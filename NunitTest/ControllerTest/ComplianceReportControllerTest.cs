@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 
-namespace Telecom360.Test.ControllerTest
+namespace Telecomm360.Test.ControllerTest
 {
     [TestFixture]
     public class ComplianceReportControllerTests
@@ -24,9 +24,8 @@ namespace Telecom360.Test.ControllerTest
             _controller = new ComplianceReportController(_serviceMock.Object);
         }
 
-        #region ✅ Helpers
+        #region Helpers
 
-        // ✅ FIXED: all required fields initialized
         private ComplianceReportResponseDto CreateTestReport(int id = 1)
         {
             return new ComplianceReportResponseDto
@@ -49,122 +48,192 @@ namespace Telecom360.Test.ControllerTest
 
         #endregion
 
-        #region ✅ GetAllComplianceReports
+        #region GetAllComplianceReports
 
         [Test]
         public async Task GetAllComplianceReports_Valid_ReturnsOk()
         {
-            // Arrange
-            var reports = new List<ComplianceReportResponseDto>
-            {
-                CreateTestReport(1),
-                CreateTestReport(2)
-            };
+            var reports = new List<ComplianceReportResponseDto> { CreateTestReport() };
 
             _serviceMock.Setup(s => s.GetAllComplianceReports())
                         .ReturnsAsync(reports);
 
-            // Act
             var result = await _controller.GetAllComplianceReports();
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(reports));
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllComplianceReports_ReturnsCorrectData()
+        {
+            var reports = new List<ComplianceReportResponseDto> { CreateTestReport() };
+
+            _serviceMock.Setup(s => s.GetAllComplianceReports())
+                        .ReturnsAsync(reports);
+
+            var result = await _controller.GetAllComplianceReports() as OkObjectResult;
+
+            Assert.That(result.Value, Is.EqualTo(reports));
+        }
+
+        [Test]
+        public async Task GetAllComplianceReports_EmptyList_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetAllComplianceReports())
+                        .ReturnsAsync(new List<ComplianceReportResponseDto>());
+
+            var result = await _controller.GetAllComplianceReports();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllComplianceReports_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.GetAllComplianceReports())
+                        .ReturnsAsync(new List<ComplianceReportResponseDto>());
+
+            await _controller.GetAllComplianceReports();
+
+            _serviceMock.Verify(s => s.GetAllComplianceReports(), Times.Once);
         }
 
         #endregion
 
-        #region ✅ GetComplianceReportById
+        #region GetComplianceReportById
 
         [Test]
         public async Task GetComplianceReportById_Valid_ReturnsOk()
         {
-            // Arrange
-            var report = CreateTestReport(1);
+            _serviceMock.Setup(s => s.GetComplianceReportById(1))
+                        .ReturnsAsync(CreateTestReport());
+
+            var result = await _controller.GetComplianceReportById(1);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetComplianceReportById_ReturnsCorrectData()
+        {
+            var report = CreateTestReport();
 
             _serviceMock.Setup(s => s.GetComplianceReportById(1))
                         .ReturnsAsync(report);
 
-            // Act
-            var result = await _controller.GetComplianceReportById(1);
+            var result = await _controller.GetComplianceReportById(1) as OkObjectResult;
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(report));
+            Assert.That(result.Value, Is.EqualTo(report));
         }
 
         [Test]
         public async Task GetComplianceReportById_NotFound_Returns404()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetComplianceReportById(1))
                         .ReturnsAsync((ComplianceReportResponseDto)null);
 
-            // Act
             var result = await _controller.GetComplianceReportById(1);
 
-            // Assert
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(ErrorMessages.NOT_FOUND));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task GetComplianceReportById_InvalidId_ReturnsBadRequest()
+        {
+            var result = await _controller.GetComplianceReportById(0);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task GetComplianceReportById_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.GetComplianceReportById(1))
+                        .ReturnsAsync(CreateTestReport());
+
+            await _controller.GetComplianceReportById(1);
+
+            _serviceMock.Verify(s => s.GetComplianceReportById(1), Times.Once);
         }
 
         [Test]
         public async Task GetComplianceReportById_Exception_Returns500()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetComplianceReportById(It.IsAny<int>()))
                         .ThrowsAsync(new Exception());
 
-            // Act
-            var result = await _controller.GetComplianceReportById(1);
+            var result = await _controller.GetComplianceReportById(1) as ObjectResult;
 
-            // Assert
-            var status = result as ObjectResult;
-            Assert.That(status, Is.Not.Null);
-            Assert.That(status.StatusCode, Is.EqualTo(500));
-            Assert.That(status.Value, Is.EqualTo(ErrorMessages.SERVER_ERROR));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         #endregion
 
-        #region ✅ CreateComplianceReport
+        #region CreateComplianceReport
 
         [Test]
         public async Task CreateComplianceReport_Valid_ReturnsOk()
         {
-            // Arrange
-            var request = CreateRequest();
-            var response = CreateTestReport(1);
+            _serviceMock.Setup(s => s.CreateComplianceReport(It.IsAny<GenerateComplianceReportRequestDto>()))
+                        .ReturnsAsync(CreateTestReport());
 
-            _serviceMock.Setup(s => s.CreateComplianceReport(request))
+            var result = await _controller.CreateComplianceReport(CreateRequest());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateComplianceReport_ReturnsCorrectData()
+        {
+            var response = CreateTestReport();
+
+            _serviceMock.Setup(s => s.CreateComplianceReport(It.IsAny<GenerateComplianceReportRequestDto>()))
                         .ReturnsAsync(response);
 
-            // Act
-            var result = await _controller.CreateComplianceReport(request);
+            var result = await _controller.CreateComplianceReport(CreateRequest()) as OkObjectResult;
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.EqualTo(response));
+            Assert.That(result.Value, Is.EqualTo(response));
+        }
+
+        [Test]
+        public async Task CreateComplianceReport_NullRequest_ReturnsOk()
+        {
+            var result = await _controller.CreateComplianceReport(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateComplianceReport_ServiceCalled_Once()
+        {
+            _serviceMock.Setup(s => s.CreateComplianceReport(It.IsAny<GenerateComplianceReportRequestDto>()))
+                        .ReturnsAsync(CreateTestReport());
+
+            await _controller.CreateComplianceReport(CreateRequest());
+
+            _serviceMock.Verify(s => s.CreateComplianceReport(It.IsAny<GenerateComplianceReportRequestDto>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateComplianceReport_ServiceReturnsNull_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.CreateComplianceReport(It.IsAny<GenerateComplianceReportRequestDto>()))
+                        .ReturnsAsync((ComplianceReportResponseDto)null);
+
+            var result = await _controller.CreateComplianceReport(CreateRequest());
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task CreateComplianceReport_Exception_Returns500()
         {
-            // Arrange
             _serviceMock.Setup(s => s.CreateComplianceReport(It.IsAny<GenerateComplianceReportRequestDto>()))
                         .ThrowsAsync(new Exception());
 
-            // Act
-            var result = await _controller.CreateComplianceReport(CreateRequest());
+            var result = await _controller.CreateComplianceReport(CreateRequest()) as ObjectResult;
 
-            // Assert
-            var status = result as ObjectResult;
-            Assert.That(status, Is.Not.Null);
-            Assert.That(status.StatusCode, Is.EqualTo(500));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         #endregion

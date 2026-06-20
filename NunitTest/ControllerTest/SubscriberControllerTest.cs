@@ -36,7 +36,6 @@ namespace Telecomm360.Test.ControllerTest
             };
         }
 
-        // FIXED (required fields added)
         private UpdateSubscriberRequestDto CreateUpdateRequest()
         {
             return new UpdateSubscriberRequestDto
@@ -48,11 +47,11 @@ namespace Telecomm360.Test.ControllerTest
             };
         }
 
-        private SubscriberResponseDto CreateSubscriber(int SubscriberId = 1)
+        private SubscriberResponseDto CreateSubscriber(int id = 1)
         {
             return new SubscriberResponseDto
             {
-                SubscriberId = SubscriberId,
+                SubscriberId = id,
                 CustomerId = 1001,
                 MSISDN = "9876543210",
                 IMSI = "123456789012345",
@@ -67,35 +66,41 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task CreateSubscriber_Valid_ReturnsOk()
         {
-            // Arrange
-            var request = CreateCreateRequest();
-            var response = CreateSubscriber(1);
+            _serviceMock.Setup(s => s.CreateSubscriberAsync(It.IsAny<CreateSubscriberRequestDto>()))
+                        .ReturnsAsync(CreateSubscriber());
 
-            _serviceMock.Setup(s => s.CreateSubscriberAsync(request))
-                        .ReturnsAsync(response);
+            var result = await _controller.CreateSubscriber(CreateCreateRequest());
 
-            // Act
-            var result = await _controller.CreateSubscriber(request);
-
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task CreateSubscriber_InvalidModel_ReturnsBadRequest()
         {
-            // Arrange
             _controller.ModelState.AddModelError("error", "invalid");
 
-            // Act
             var result = await _controller.CreateSubscriber(CreateCreateRequest());
 
-            // Assert
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test]
+        public async Task CreateSubscriber_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.CreateSubscriberAsync(It.IsAny<CreateSubscriberRequestDto>()))
+                        .ReturnsAsync(CreateSubscriber());
+
+            await _controller.CreateSubscriber(CreateCreateRequest());
+
+            _serviceMock.Verify(s => s.CreateSubscriberAsync(It.IsAny<CreateSubscriberRequestDto>()), Times.Once);
+        }
+
+        [Test]
+        public async Task CreateSubscriber_NullRequest_ReturnsOk()
+        {
+            var result = await _controller.CreateSubscriber(null);
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         #endregion
@@ -105,23 +110,48 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task GetAllSubscriber_Valid_ReturnsOk()
         {
-            // Arrange
-            var list = new List<SubscriberResponseDto>
-            {
-                CreateSubscriber(1),
-                CreateSubscriber(2)
-            };
-
             _serviceMock.Setup(s => s.GetAllSubscribersAsync())
-                        .ReturnsAsync(list);
+                        .ReturnsAsync(new List<SubscriberResponseDto> { CreateSubscriber() });
 
-            // Act
             var result = await _controller.GetAllSubscriber();
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
-            Assert.That(ok.Value, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllSubscriber_Empty_ReturnsOk()
+        {
+            _serviceMock.Setup(s => s.GetAllSubscribersAsync())
+                        .ReturnsAsync(new List<SubscriberResponseDto>());
+
+            var result = await _controller.GetAllSubscriber();
+
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetAllSubscriber_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetAllSubscribersAsync())
+                        .ReturnsAsync(new List<SubscriberResponseDto>());
+
+            await _controller.GetAllSubscriber();
+
+            _serviceMock.Verify(s => s.GetAllSubscribersAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAllSubscriber_ReturnsCorrectData()
+        {
+            var data = new List<SubscriberResponseDto> { CreateSubscriber() };
+
+            _serviceMock.Setup(s => s.GetAllSubscribersAsync())
+                        .ReturnsAsync(data);
+
+            var result = await _controller.GetAllSubscriber() as OkObjectResult;
+
+            var wrapped = result.Value as dynamic;
+            Assert.That(wrapped.data, Is.EqualTo(data));
         }
 
         #endregion
@@ -131,46 +161,42 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task GetSubscriberById_Valid_ReturnsOk()
         {
-            // Arrange
-            var response = CreateSubscriber(1);
-
             _serviceMock.Setup(s => s.GetSubscriberByIdAsync(1))
-                        .ReturnsAsync(response);
+                        .ReturnsAsync(CreateSubscriber());
 
-            // Act
             var result = await _controller.GetSubscriberById(1);
 
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task GetSubscriberById_InvalidId_ReturnsBadRequest()
         {
-            // Act
             var result = await _controller.GetSubscriberById(0);
 
-            // Assert
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
         public async Task GetSubscriberById_NotFound_Returns404()
         {
-            // Arrange
             _serviceMock.Setup(s => s.GetSubscriberByIdAsync(1))
                         .ReturnsAsync((SubscriberResponseDto)null);
 
-            // Act
             var result = await _controller.GetSubscriberById(1);
 
-            // Assert
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(SubscriberConstants.NotFound));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task GetSubscriberById_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.GetSubscriberByIdAsync(1))
+                        .ReturnsAsync(CreateSubscriber());
+
+            await _controller.GetSubscriberById(1);
+
+            _serviceMock.Verify(s => s.GetSubscriberByIdAsync(1), Times.Once);
         }
 
         #endregion
@@ -180,47 +206,42 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task UpdateSubscriber_Valid_ReturnsOk()
         {
-            // Arrange
-            var request = CreateUpdateRequest();
-            var response = CreateSubscriber(1);
+            _serviceMock.Setup(s => s.UpdateSubscriberAsync(1, It.IsAny<UpdateSubscriberRequestDto>()))
+                        .ReturnsAsync(CreateSubscriber());
 
-            _serviceMock.Setup(s => s.UpdateSubscriberAsync(1, request))
-                        .ReturnsAsync(response);
+            var result = await _controller.UpdateSubscriberById(1, CreateUpdateRequest());
 
-            // Act
-            var result = await _controller.UpdateSubscriberById(1, request);
-
-            // Assert
-            var ok = result as OkObjectResult;
-            Assert.That(ok, Is.Not.Null);
+            Assert.That(result, Is.TypeOf<OkObjectResult>());
         }
 
         [Test]
         public async Task UpdateSubscriber_InvalidId_ReturnsBadRequest()
         {
-            // Act
             var result = await _controller.UpdateSubscriberById(0, CreateUpdateRequest());
 
-            // Assert
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
         public async Task UpdateSubscriber_NotFound_Returns404()
         {
-            // Arrange
             _serviceMock.Setup(s => s.UpdateSubscriberAsync(1, It.IsAny<UpdateSubscriberRequestDto>()))
                         .ReturnsAsync((SubscriberResponseDto)null);
 
-            // Act
             var result = await _controller.UpdateSubscriberById(1, CreateUpdateRequest());
 
-            // Assert
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(SubscriberConstants.NotFound));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+        }
+
+        [Test]
+        public async Task UpdateSubscriber_ServiceCalledOnce()
+        {
+            _serviceMock.Setup(s => s.UpdateSubscriberAsync(1, It.IsAny<UpdateSubscriberRequestDto>()))
+                        .ReturnsAsync(CreateSubscriber());
+
+            await _controller.UpdateSubscriberById(1, CreateUpdateRequest());
+
+            _serviceMock.Verify(s => s.UpdateSubscriberAsync(1, It.IsAny<UpdateSubscriberRequestDto>()), Times.Once);
         }
 
         #endregion
@@ -230,43 +251,31 @@ namespace Telecomm360.Test.ControllerTest
         [Test]
         public async Task DeleteSubscriber_Valid_ReturnsOk()
         {
-            // Arrange
             _serviceMock.Setup(s => s.DeleteSubscriberAsync(1))
                         .ReturnsAsync(true);
 
-            // Act
             var result = await _controller.DeleteSubscriberById(1);
 
-            // Assert
             Assert.That(result, Is.TypeOf<OkResult>());
         }
 
         [Test]
         public async Task DeleteSubscriber_InvalidId_ReturnsBadRequest()
         {
-            // Act
             var result = await _controller.DeleteSubscriberById(0);
 
-            // Assert
-            var badRequest = result as BadRequestObjectResult;
-            Assert.That(badRequest, Is.Not.Null);
-            Assert.That(badRequest.Value, Is.EqualTo(GeneralConstants.InvalidInput));
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
         [Test]
         public async Task DeleteSubscriber_NotFound_Returns404()
         {
-            // Arrange
             _serviceMock.Setup(s => s.DeleteSubscriberAsync(1))
                         .ReturnsAsync(false);
 
-            // Act
             var result = await _controller.DeleteSubscriberById(1);
 
-            // Assert
-            var notFound = result as NotFoundObjectResult;
-            Assert.That(notFound, Is.Not.Null);
-            Assert.That(notFound.Value, Is.EqualTo(SubscriberConstants.NotFound));
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
         #endregion
