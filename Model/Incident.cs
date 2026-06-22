@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Telecomm360.Enum;
 
 namespace Telecomm360.Model
 {
     public class Incident
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IncidentID { get; set; }
         public int AlarmID { get; set; }
         public Alarm Alarm { get; set; }

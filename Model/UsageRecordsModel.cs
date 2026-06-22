@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Telecomm360.Model
 {   
@@ -7,6 +8,7 @@ public class UsageRecord
 {
     
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UsageRecordId { get; set; }
     public int SubscriberID { get; set; } = 0;
     public string ServiceType { get; set; } = string.Empty;
